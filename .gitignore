@@ -1,0 +1,80 @@
+# ==========================================================
+# 📦 GLOBAL SETTINGS
+# ==========================================================
+
+# OS-specific files
+.DS_Store
+Thumbs.db
+
+# IDE / Editor settings
+.vscode/
+.idea/
+
+# Log files
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Environment variables (both client & server)
+**/.env
+**/.env.*
+!**/.env.example   # Allow example envs to stay
+
+# Cache & temp files
+.cache/
+tmp/
+*.cache
+*.pid
+*.seed
+*.pid.lock
+
+# ==========================================================
+# ⚙️ SERVER (Backend)
+# ==========================================================
+
+code/server/node_modules/
+code/server/dist/
+code/server/logs/
+code/server/coverage/
+code/server/.nyc_output/
+code/server/package-lock.json
+
+# ==========================================================
+# 🎨 CLIENT (Frontend)
+# ==========================================================
+
+code/client/node_modules/
+code/client/dist/
+code/client/build/
+code/client/.vite/
+code/client/.next/
+code/client/coverage/
+code/client/.eslintcache
+code/client/package-lock.json
+
+# ==========================================================
+# 🧰 MISC / TOOLING
+# ==========================================================
+
+# Lock and backup files
+*.swp
+*.bak
+*.tmp
+*.orig
+
+# Local environment config
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# ==========================================================
+# 🧪 TESTING / CI
+# ==========================================================
+
+coverage/
+.nyc_output/
+jest-test-results.json
+test-report.xml
