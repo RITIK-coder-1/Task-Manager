@@ -3,8 +3,7 @@
 // Entry point of the backend application.
 // ----------------------------------------------
 
-import express from "express"; // Import the Express framework
-import statusRouter from "./routes/status.routes.js"; // Importing the authentication route
+import app from "./app.js"; // importing the express app
 import "dotenv/config"; // Importing the environment variables
 import connectDB from "./config/db.js"; // The database connection function
 
@@ -12,26 +11,13 @@ import connectDB from "./config/db.js"; // The database connection function
 // All the variables and constants of the file
 // ----------------------------------------------
 
-const app = express(); // Initialize the Express application
 const port = process.env.PORT || 3000; // Port number for the server to listen on
 const hostname = "localhost"; // Hostname
 
 // ----------------------------------------------
-// Routes
+// Global error handling middleware
 // ----------------------------------------------
 
-// Simple status check
-app.use("/", statusRouter);
-
-// ----------------------------------------------
-// Global error checks
-// ----------------------------------------------
-
-app.on("error", (error) => {
-  console.log("There was an unexpected error: ", error); // it catches any unexpected errors before starting the server
-});
-
-// Global Error Handling Middleware
 app.use((error, req, res, next) => {
   res.status(error.status || 500).json({
     success: false,
