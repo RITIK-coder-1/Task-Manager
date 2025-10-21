@@ -9,7 +9,7 @@ import { Router } from "express"; // importing the router
 // All the variables and constants of the file
 // ----------------------------------------------
 
-const statusRouter = Router();
+const statusRouter = Router(); // the router object
 
 // ----------------------------------------------
 // Defining the route

@@ -1,7 +1,6 @@
 // ----------------------------------------------
 // server.js
 // Entry point of the backend application.
-// Sets up an Express server with a test route.
 // ----------------------------------------------
 
 import express from "express"; // Import the Express framework
@@ -19,8 +18,7 @@ const hostname = "localhost"; // Hostname
 // Routes
 // ----------------------------------------------
 
-// The app uses the authentication route
-// Sends a simple text response to verify that the server is running
+// Simple status check
 app.use("/", statusRouter);
 
 // ----------------------------------------------
