@@ -12,19 +12,7 @@ import connectDB from "./config/db.js"; // The database connection function
 // ----------------------------------------------
 
 const port = process.env.PORT || 3000; // Port number for the server to listen on
-const hostname = "localhost"; // Hostname
-
-// ----------------------------------------------
-// Global error handling middleware
-// ----------------------------------------------
-
-app.use((error, req, res, next) => {
-  res.status(error.status || 500).json({
-    success: false,
-    message: error.message || "Internal Server Error",
-    error: process.env.NODE_ENV === "development" ? error : undefined, // Full error object for debugging (only in development)
-  });
-});
+const hostname = process.env.HOST || "0.0.0.0"; // Hostname
 
 // ----------------------------------------------
 // Server Startup and Database Connection
@@ -39,7 +27,7 @@ connectDB()
     });
   })
   .catch((err) => {
-    console.log(
+    console.error(
       "there was an error while connecting to the database and it was: ",
       err
     ); // If there is a problem while connecting to the database
