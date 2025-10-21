@@ -21,7 +21,7 @@ const hostname = "localhost"; // Hostname
 // GET / → Root route
 // Sends a simple text response to verify that the server is running
 app.get("/", (req, res) => {
-  res.send("Hey!");
+  res.send("<h1>Hey, This is the server of my application!!<h1/>");
 });
 
 // ----------------------------------------------
