@@ -31,6 +31,15 @@ app.on("error", (error) => {
   console.log("There was an unexpected error: ", error); // it catches any unexpected errors before starting the server
 });
 
+// Global Error Handling Middleware
+app.use((error, req, res, next) => {
+  res.status(error.status || 500).json({
+    success: false,
+    message: error.message || "Internal Server Error",
+    error: process.env.NODE_ENV === "development" ? error : undefined, // Full error object for debugging (only in development)
+  });
+});
+
 // ----------------------------------------------
 // Server Startup and Database Connection
 // ----------------------------------------------
