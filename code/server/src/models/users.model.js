@@ -17,22 +17,24 @@ const userSchema = new mongoose.Schema(
         type: String,
         required: true, // mandatory
         unique: false, // multiple people can have the same name
+        trim: true, // removes the white space
       },
       lastName: {
         type: String,
         required: false, // optional
         unique: false,
+        trim: true,
       },
     },
 
     // the unique username of the user. This could be a combination of different characters. 6 lowercase characters
     username: {
       type: String,
-      required: true,
+      required: [true, "Username is mandatory!"],
       unique: true, // unique
       lowercase: true,
-      minlength: [6, "The username must be of 6 characters only."],
-      maxlength: [6, "The username must be of 6 characters only."],
+      minlength: [3, "The username must be of 3 characters only."],
+      maxlength: [30, "The username must not exceed 30 characters."],
     },
 
     // the password of the user. 6-8 characters
@@ -40,8 +42,7 @@ const userSchema = new mongoose.Schema(
       type: String,
       required: true, // mandatory
       unique: false,
-      minlength: [6, "You have to enter at least 6 characters"],
-      maxlength: [8, "You can not enter more than 8 characters"],
+      minlength: [10, "You have to enter at least 10 characters"], // longer password for security
     },
 
     // the email of the User
@@ -50,6 +51,7 @@ const userSchema = new mongoose.Schema(
       required: true, // mandatory
       unique: true, // unique
       lowercase: true,
+      trim: true, // removes the whitespaces
     },
   },
   {
