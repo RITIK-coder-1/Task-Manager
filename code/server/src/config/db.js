@@ -4,8 +4,6 @@
 // ----------------------------------------------
 
 import mongoose from "mongoose"; // importing mongoose
-import { DB_NAME } from "../constants.js"; // the database name
-import "dotenv/config"; // the environment variables
 
 // ----------------------------------------------
 // The function to connect to the database
@@ -13,7 +11,7 @@ import "dotenv/config"; // the environment variables
 
 async function connectDB() {
   try {
-    await mongoose.connect(`${process.env.MONGO_URI}/${DB_NAME}`);
+    await mongoose.connect(`${process.env.MONGO_URI}/${process.env.DB_NAME}`);
     console.log("Database connected successfully!"); // if the connection was successful
   } catch (error) {
     console.log(

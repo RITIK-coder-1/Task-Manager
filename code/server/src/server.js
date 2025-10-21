@@ -32,7 +32,7 @@ app.on("error", (error) => {
 });
 
 // ----------------------------------------------
-// Server Startup
+// Server Startup and Database Connection
 // ----------------------------------------------
 
 connectDB()
