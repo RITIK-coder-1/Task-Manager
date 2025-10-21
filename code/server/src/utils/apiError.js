@@ -4,14 +4,25 @@
 // ----------------------------------------------
 
 class ApiError extends Error {
-  constructor(statusCode, message, errors = [], stack = "") {
-    super(typeof message === "string" ? message : JSON.stringify(message)); // if the message is in JSON data, convert it into string
+  constructor(
+    statusCode,
+    message = "Something went wrong", // default message for better robustness
+    errors = [],
+    stack = ""
+  ) {
+    super(message);
+
     this.statusCode = statusCode;
     this.success = false;
     this.errors = errors;
 
-    // Stack trace handling
-    this.stack = stack || new Error().stack; // If a stack trace is provided, it uses that. Otherwise, it generates a new stack trace. This helps in debugging by showing where the error originated in the code.
+    // Using Error.captureStackTrace for clean stack traces in Node.js environments
+    if (stack) {
+      this.stack = stack;
+    } else {
+      // Capture stack trace, starting from the function after the constructor
+      Error.captureStackTrace(this, this.constructor);
+    }
   }
 }
 
