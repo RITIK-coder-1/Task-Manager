@@ -4,6 +4,7 @@
 // ----------------------------------------------
 
 import mongoose from "mongoose"; // importing mongoose
+import bcrypt from "bcrypt"; // importing bcrypt for hashing passwords
 
 // ----------------------------------------------
 // Creating the user schema and defining its fields
@@ -58,6 +59,25 @@ const userSchema = new mongoose.Schema(
     timestamps: true,
   }
 );
+
+// ----------------------------------------------
+// Hashing the password for extra security
+// ----------------------------------------------
+
+userSchema.pre("save", hashPassword); // before saving the password, hash it
+
+async function hashPassword(next) {
+  if (this.idModified("password")) {
+    // hash the password only when the password is updated instead of updating it again and again before saving each data field
+    try {
+      this.password = await bcrypt.hash(this.password, 10); // hash the password with 10 salt rounds
+      console.log("The password has been successfully hashed!");
+    } catch (error) {
+      console.error("There was an error while hashing the password: ", error);
+    }
+  }
+  next(); // it is called because the pre hook is a middleware
+}
 
 // ----------------------------------------------
 // Creating the User model based on "userSchema"
