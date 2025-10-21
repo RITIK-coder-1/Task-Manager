@@ -67,16 +67,20 @@ const userSchema = new mongoose.Schema(
 userSchema.pre("save", hashPassword); // before saving the password, hash it
 
 async function hashPassword(next) {
-  if (this.idModified("password")) {
-    // hash the password only when the password is updated instead of updating it again and again before saving each data field
-    try {
-      this.password = await bcrypt.hash(this.password, 10); // hash the password with 10 salt rounds
-      console.log("The password has been successfully hashed!");
-    } catch (error) {
-      console.error("There was an error while hashing the password: ", error);
-    }
+  if (!this.isModified("password")) {
+    return next(); // If password hasn't been modified, skip hashing and move on.
   }
-  next(); // it is called because the pre hook is a middleware
+
+  // 2. Perform hashing with error handling
+  try {
+    this.password = await bcrypt.hash(this.password, 10); // hash the passoword with 10 salt rounds
+    console.log("Password successfully hashed before saving.");
+    next(); // Proceed to save only after successful hashing
+  } catch (error) {
+    // If hashing fails, log the error and pass it to Mongoose to abort the save operation, preventing plain text data exposure.
+    console.error("Failed to hash password.", error);
+    next(error); // Abort the save operation
+  }
 }
 
 // ----------------------------------------------
