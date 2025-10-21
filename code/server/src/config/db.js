@@ -1,6 +1,7 @@
 // ----------------------------------------------
 // db.js
-// This file sets up the connection between the database and the express server.
+// This file sets up the connection between the database and the express server,
+// relying solely on environment variables for configuration.
 // ----------------------------------------------
 
 import mongoose from "mongoose"; // importing mongoose
@@ -10,15 +11,24 @@ import mongoose from "mongoose"; // importing mongoose
 // ----------------------------------------------
 
 async function connectDB() {
+  // Constructing the full connection string from environment variables
+  const connectionUrl = `${process.env.MONGO_URI}/${process.env.DB_NAME}`;
+
   try {
-    await mongoose.connect(`${process.env.MONGO_URI}/${process.env.DB_NAME}`);
-    console.log("Database connected successfully!"); // if the connection was successful
+    // Attempt the connection using the environment-provided URL
+    await mongoose.connect(connectionUrl);
+
+    // Log success
+    console.log("Database connected successfully!");
   } catch (error) {
-    console.log(
-      `There was an error while connecting to the database and it was: ${error}`
-    ); // if there is an error while connecting
-    process.exit(1); // exit with a general error message
+    console.error(
+      `CRITICAL ERROR: Failed to connect to the database: ${error}`
+      // We print the error object itself for full stack trace
+    );
+
+    // Exit the process as the application cannot run without the database
+    process.exit(1);
   }
 }
 
-export default connectDB; // exporting the connection function
+export default connectDB;
