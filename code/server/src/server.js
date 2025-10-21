@@ -5,6 +5,7 @@
 // ----------------------------------------------
 
 import express from "express"; // Import the Express framework
+import statusRouter from "./routes/status.routes.js"; // Importing the authentication route
 
 // ----------------------------------------------
 // All the variables and constants of the file
@@ -18,11 +19,9 @@ const hostname = "localhost"; // Hostname
 // Routes
 // ----------------------------------------------
 
-// GET / → Root route
+// The app uses the authentication route
 // Sends a simple text response to verify that the server is running
-app.get("/", (req, res) => {
-  res.send("<h1>Hey, This is the server of my application!!<h1/>");
-});
+app.use("/", statusRouter);
 
 // ----------------------------------------------
 // Server Startup
@@ -31,5 +30,5 @@ app.get("/", (req, res) => {
 // Start the server and listen on the defined port
 // Logs a message to confirm successful startup
 app.listen(port, () => {
-  console.log(`✅ Server is running at http://${hostname}:${port}`);
+  console.log(`Server is running at http://${hostname}:${port}`);
 });
