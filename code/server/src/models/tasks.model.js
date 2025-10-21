@@ -1,6 +1,6 @@
 // ----------------------------------------------
 // tasks.model.js
-// This file defines the entire schema for storing the tasks' data created by a user
+// This file defines the entire schema for storing the task's data created by a user
 // ----------------------------------------------
 
 import mongoose from "mongoose"; // importing mongoose
@@ -17,20 +17,50 @@ const taskSchema = new mongoose.Schema(
       required: true,
       unique: false,
       maxlength: [30, "The maximum length of the characters reached."],
+      trim: true, // removing the whitespaces for faster queries
     },
 
     // description of the task
     description: {
       type: String,
-      required: true,
+      default: "",
+      required: false, // description is not required for low priority tasks.
+      trim: true,
     },
 
     // completion
-    complete: {
+    isCompleted: {
       type: Boolean,
-      required: true, // either yes or no
+      default: false,
+    },
+
+    // How important this task is
+    priority: {
+      type: String,
+      enum: ["Low", "Medium", "High", "Urgent"],
+      default: "Low",
+    },
+
+    // Scheduling to organize tasks chronologically
+    dueDate: {
+      type: Date,
+      required: false,
+    },
+
+    // the type of task
+    category: {
+      type: String,
+      required: false,
+    },
+
+    // the owner of the task
+    owner: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User", // links to the user schema
+      required: true,
     },
   },
+
   {
     timestamps: true,
   }
@@ -42,4 +72,4 @@ const taskSchema = new mongoose.Schema(
 
 const Task = new mongoose.model("Task", taskSchema);
 
-export default User; // exporting the model as default
+export default Task; // exporting the model as default
