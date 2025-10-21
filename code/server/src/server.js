@@ -6,7 +6,7 @@
 import express from "express"; // Import the Express framework
 import statusRouter from "./routes/status.routes.js"; // Importing the authentication route
 import "dotenv/config"; // Importing the environment variables
-import connectDB from "./config/db.js";
+import connectDB from "./config/db.js"; // The database connection function
 
 // ----------------------------------------------
 // All the variables and constants of the file
@@ -24,17 +24,28 @@ const hostname = "localhost"; // Hostname
 app.use("/", statusRouter);
 
 // ----------------------------------------------
+// Global error checks
+// ----------------------------------------------
+
+app.on("error", (error) => {
+  console.log("There was an unexpected error: ", error); // it catches any unexpected errors before starting the server
+});
+
+// ----------------------------------------------
 // Server Startup
 // ----------------------------------------------
 
 connectDB()
   .then(() => {
-    // Start the server and listen on the defined port
+    // Start the server and listen on the defined port if the database connected properly
     // Logs a message to confirm successful startup
     app.listen(port, () => {
       console.log(`Server is running at http://${hostname}:${port}`);
     });
   })
   .catch((err) => {
-    console.log("there was an error while connecting to the database", err);
+    console.log(
+      "there was an error while connecting to the database and it was: ",
+      err
+    ); // If there is a problem while connecting to the database
   });
