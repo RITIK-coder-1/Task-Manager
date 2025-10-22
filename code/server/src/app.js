@@ -7,6 +7,7 @@ import express from "express"; // importing express
 import cors from "cors"; // importing cors for security
 import cookieParser from "cookie-parser"; // importing cookie-parser
 import ApiError from "./utils/apiError.js"; // importing the API error class
+import path from "path"; // importing the path module
 
 const app = express(); // the express app
 const jsonlimit = "16kb"; // setting the limit of accepting data
