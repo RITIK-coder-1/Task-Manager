@@ -39,6 +39,12 @@ const userSchema = new mongoose.Schema(
       maxlength: [30, "The username must not exceed 30 characters."],
     },
 
+    // the profile pic of the users
+    profilePic: {
+      type: String,
+      required: false, // users can choose not to have any profile pic
+    },
+
     // the password of the user. 6-8 characters
     password: {
       type: String,
