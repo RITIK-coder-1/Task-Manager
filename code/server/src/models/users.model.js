@@ -6,7 +6,6 @@
 import mongoose from "mongoose"; // importing mongoose
 import bcrypt from "bcrypt"; // importing bcrypt for hashing passwords
 import jwt from "jsonwebtoken"; // importing for generating tokens
-import { type } from "os";
 
 // ----------------------------------------------
 // Creating the user schema and defining its fields
@@ -71,9 +70,8 @@ const userSchema = new mongoose.Schema(
 // Hashing the password for extra security
 // ----------------------------------------------
 
-userSchema.pre("save", hashPassword); // before saving the password, hash it
-
-async function hashPassword(next) {
+// before saving the password, hash it
+userSchema.pre("save", async function (next) {
   if (!this.isModified("password")) {
     return next(); // If password hasn't been modified, skip hashing and move on.
   }
@@ -88,7 +86,7 @@ async function hashPassword(next) {
     console.error("Failed to hash password: ", error);
     next(error); // Abort the save operation
   }
-}
+});
 
 // ----------------------------------------------
 // Method for checking if the entered password is correct
