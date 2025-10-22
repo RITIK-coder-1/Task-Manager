@@ -13,49 +13,51 @@ cloudinary.config({
   api_secret: process.env.CLOUDINARY_API_SECRET,
 });
 
-const uploadOnCloudinary = async (filepath) => {
+// Once the file is uploaded to cloudinary, it should be deleted from the server
+
+const deleteLocalFile = async (filepath) => {
+  if (!filepath) return; // If the file doesn't exist
+
   try {
-    const response = await cloudinary.uploader.upload(filepath, {
-      resourse_type: "auto",
-    });
-    console.log(
-      "The file has been successfully uploaded and its url: ",
-      response.url
-    );
-
-    // delete the file after uploading
-    fs.unlink(filepath, (error) => {
-      error
-        ? console.error(
-            "The file has been uploaded successfully but there was an error while deleting the file from the server: ",
-            error
-          )
-        : console.log(
-            "The file has been uploaded successfully and it has been deleted from the server"
-          );
-    });
-
-    return response;
+    await fs.unlink(filepath); // delete the file
+    console.log(`Local file deleted successfully: ${filepath}`);
   } catch (error) {
-    // delete the file incase it's been tampered with
-    fs.unlink(filepath, (error) => {
-      error
-        ? console.error(
-            "The file hasn't been uploaded and there was an error while deleting the file from the server: ",
-            error
-          )
-        : console.log(
-            "The file hasn't been uploaded but it has been deleted from the server"
-          );
-    });
-
-    console.error(
-      "There was an error while uploading the file on cloudinary: ",
-      error
-    );
-
-    return null;
+    // ENOENT (Error No Entry) means the file was already gone.
+    if (error.code !== "ENOENT") {
+      console.warn(
+        `Could not delete local file (Permission/Locking Error): ${filepath}`,
+        error.message
+      );
+    }
   }
 };
 
-export default uploadOnCloudinary;
+// upload to cloudinary
+
+const uploadOnCloudinary = async (filepath) => {
+  if (!filepath) return null; // If the filepath doesn't exist
+
+  try {
+    const response = await cloudinary.uploader.upload(filepath, {
+      resource_type: "auto", // it uploads the file and provides the resource
+    });
+
+    console.log(
+      "The file has been successfully uploaded and its URL: ",
+      response.url
+    );
+
+    return response; // the url will be stored inside the database
+  } catch (error) {
+    console.error(
+      "There was an error while uploading the file on Cloudinary:",
+      error.message
+    );
+    return null;
+  } finally {
+    // File cleanup should happen regardless of success/failure
+    await deleteLocalFile(filepath);
+  }
+};
+
+export { uploadOnCloudinary, deleteLocalFile }; // Export both for utility
