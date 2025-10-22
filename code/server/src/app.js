@@ -35,7 +35,9 @@ app.use(
   })
 );
 
-app.use("/static", express.static("public")); // public is the folder that serves the static files
+// public is the folder that serves the static files.
+// it takes the absolute path of the current working directory and joins it with the public folder
+app.use("/static", express.static(path.join(path.resolve(), "public")));
 app.use(cookieParser()); // parsing cookies manually because express doesn't do it automatically
 
 // ----------------------------------------------
