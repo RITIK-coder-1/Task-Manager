@@ -1,6 +1,6 @@
 // ----------------------------------------------
 // cloudinary.js
-// This script uploads the files from our server to cloudinary
+// This script uploads the files from our server to cloudinary, and deletes it from the server once the upload was successfull
 // ----------------------------------------------
 
 import { v2 as cloudinary } from "cloudinary";
