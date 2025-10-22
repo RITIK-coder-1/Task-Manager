@@ -78,10 +78,31 @@ async function hashPassword(next) {
     next(); // Proceed to save only after successful hashing
   } catch (error) {
     // If hashing fails, log the error and pass it to Mongoose to abort the save operation, preventing plain text data exposure.
-    console.error("Failed to hash password.", error);
+    console.error("Failed to hash password: ", error);
     next(error); // Abort the save operation
   }
 }
+
+// ----------------------------------------------
+// Method for checking if the entered password is correct
+// ----------------------------------------------
+
+// assinging a custom method to the user schema
+userSchema.methods.isPasswordCorrect = async function (password) {
+  if (!this.password) {
+    console.warn("Attempted to compare password on a document missing a hash."); // if the stored password is missing
+    return false;
+  }
+  try {
+    // 'password' is the plain text string submitted by the user.
+    // 'this.password' is the hashed string retrieved from the database document.
+    return await bcrypt.compare(password, this.password); // Returns a boolean
+  } catch (error) {
+    // If the comparison fails due to a library error (e.g., malformed hash)
+    console.error("Critical error during password comparison:", error.message);
+    return false;
+  }
+};
 
 // ----------------------------------------------
 // Creating the User model based on "userSchema"
