@@ -6,6 +6,7 @@
 import mongoose from "mongoose"; // importing mongoose
 import bcrypt from "bcrypt"; // importing bcrypt for hashing passwords
 import jwt from "jsonwebtoken"; // importing for generating tokens
+import { type } from "os";
 
 // ----------------------------------------------
 // Creating the user schema and defining its fields
@@ -54,6 +55,11 @@ const userSchema = new mongoose.Schema(
       unique: true, // unique
       lowercase: true,
       trim: true, // removes the whitespaces
+    },
+
+    // the string for refresh tokens
+    refreshTokenString: {
+      type: String,
     },
   },
   {
@@ -125,10 +131,11 @@ userSchema.methods.generateAccessToken = function () {
 };
 
 // the refresh token
-userSchema.methods.generateRefreshToken = function () {
+userSchema.methods.generateRefreshToken = function (uniqueTokenString) {
   return jwt.sign(
     {
-      _id: this._id, // only the id is saved for the refresh token
+      _id: this._id, // the id is saved for the refresh token
+      uniqueToken: uniqueTokenString, // this unique string separates two distinct refresh tokens
     },
     process.env.REFRESH_TOKEN_SECRET,
     {
