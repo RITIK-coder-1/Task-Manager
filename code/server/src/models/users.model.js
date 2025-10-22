@@ -5,6 +5,7 @@
 
 import mongoose from "mongoose"; // importing mongoose
 import bcrypt from "bcrypt"; // importing bcrypt for hashing passwords
+import jwt from "jsonwebtoken"; // importing for generating tokens
 
 // ----------------------------------------------
 // Creating the user schema and defining its fields
@@ -102,6 +103,25 @@ userSchema.methods.isPasswordCorrect = async function (password) {
     console.error("Critical error during password comparison:", error.message);
     return false;
   }
+};
+
+// ----------------------------------------------
+// Token generators
+// ----------------------------------------------
+
+userSchema.methods.generateAccessToken = function () {
+  return jwt.sign(
+    {
+      _id: this._id,
+      username: this.username,
+      email: this.email,
+      fullName: this.fullname,
+    },
+    process.env.ACCESS_TOKEN_SECRET,
+    {
+      expiresIn: process.env.ACCESS_TOKEN_EXPIRY,
+    }
+  );
 };
 
 // ----------------------------------------------
