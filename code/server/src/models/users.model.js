@@ -26,6 +26,7 @@ const userSchema = new mongoose.Schema(
         required: false, // optional
         unique: false,
         trim: true,
+        default: "",
       },
     },
 
@@ -43,6 +44,7 @@ const userSchema = new mongoose.Schema(
     profilePic: {
       type: String,
       required: false, // users can choose not to have any profile pic
+      default: "",
     },
 
     // the password of the user. 6-8 characters

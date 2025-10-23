@@ -60,4 +60,4 @@ const uploadOnCloudinary = async (filepath) => {
   }
 };
 
-export { uploadOnCloudinary, deleteLocalFile }; // Export both for utility
+export { uploadOnCloudinary }; // Export both for utility
