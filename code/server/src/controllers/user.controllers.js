@@ -20,7 +20,7 @@ const registerUserFunction = async (req, res) => {
 
   // checking if all the required fields are present or not
   const isRequiredAbsent = [fullName, username, password, email].some(
-    (field) => field.trim() === "" // if at least one field is not entered, it will store true
+    (field) => field?.trim() === "" // if at least one field is not entered, it will store true
   );
 
   if (isRequiredAbsent) {
