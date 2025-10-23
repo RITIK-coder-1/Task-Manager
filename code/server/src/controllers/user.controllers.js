@@ -279,6 +279,46 @@ const getUserFunction = async (req, res) => {
 // Function to update the user account
 // ----------------------------------------------
 
+const updateAccountFunction = async (req, res) => {
+  // getting the data to update
+  const { fullname, username, email } = req.body; // once a field is updated, all the fields should be submited as they are
+
+  // validating the data to be updated
+  const isEmpty = [fullname, username, email].some(
+    (field) => field?.trim() === "" // return true if at least one of the fields is empty
+  );
+
+  if (isEmpty) {
+    throw new ApiError(400, "All Fields Are Required!");
+  }
+
+  // finding the user and updating its values
+  const user = await User.findByIdAndUpdate(
+    req.user?._id,
+    {
+      $set: {
+        // it overrides the previous values
+        fullname: fullname,
+        username: username,
+        email: email,
+      },
+    },
+    {
+      new: true,
+    }
+  ).select("-password -refreshToken"); // excluding sensitive information
+
+  // checking if the user is valid
+  if (!user) {
+    throw new ApiError(400, "User could not be updated");
+  }
+
+  // sending an API response for the successful update
+  return res
+    .status(200)
+    .json(new ApiResponse(200, user, "Account has been updated successfully"));
+};
+
 // ----------------------------------------------
 // Error Handling
 // ----------------------------------------------
@@ -287,5 +327,13 @@ const loginUser = asyncHandler(loginFunction);
 const logoutUser = asyncHandler(logoutFunction);
 const newAccessToken = asyncHandler(newAccessTokenFunction);
 const getCurrentUser = asyncHandler(getUserFunction);
+const updateAccount = asyncHandler(updateAccountFunction);
 
-export { registerUser, loginUser, logoutUser, newAccessToken, getCurrentUser };
+export {
+  registerUser,
+  loginUser,
+  logoutUser,
+  newAccessToken,
+  getCurrentUser,
+  updateAccount,
+};
