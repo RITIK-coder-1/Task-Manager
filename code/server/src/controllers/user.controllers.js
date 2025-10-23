@@ -281,7 +281,7 @@ const getUserFunction = async (req, res) => {
 
 const updateAccountFunction = async (req, res) => {
   // getting the data to update
-  const { fullname, username, email } = req.body; // once a field is updated, all the fields should be submited as they are
+  const { fullname, username, email, _id } = req.body; // once a field is updated, all the fields should be submited as they are
 
   // validating the data to be updated
   const isEmpty = [fullname, username, email].some(
@@ -292,7 +292,28 @@ const updateAccountFunction = async (req, res) => {
     throw new ApiError(400, "All Fields Are Required!");
   }
 
+  // The user may have entered a new username or email that is already acquired by some other user
+
+  const existingEmail = await User.findOne({
+    email: email,
+    _id: { $ne: _id }, // find excluding the current user
+  });
+
+  if (existingEmail) {
+    throw new ApiError(409, "The entered email is already present!"); // if the updated email is already present
+  }
+
+  const existingUsername = await User.findOne({
+    username: username,
+    _id: { $ne: _id }, // find excluding the current user
+  });
+
+  if (existingUsername) {
+    throw new ApiError(409, "The entered username is already present!"); // if the updated username is already present
+  }
+
   // finding the user and updating its values
+
   const user = await User.findByIdAndUpdate(
     req.user?._id,
     {
