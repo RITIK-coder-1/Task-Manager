@@ -140,7 +140,7 @@ userSchema.methods.generateAccessToken = function () {
 userSchema.methods.generateRefreshToken = function (uniqueTokenString) {
   return jwt.sign(
     {
-      _id: this._id, // the id is saved for the refresh token
+      id: this._id, // the id is saved for the refresh token
       uniqueToken: uniqueTokenString, // this unique string separates two distinct refresh tokens
     },
     process.env.REFRESH_TOKEN_SECRET,

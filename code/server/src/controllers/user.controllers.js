@@ -202,7 +202,7 @@ const newAccessTokenFunction = async (req, res) => {
       req.cookies?.refreshToken || req.body?.refreshToken;
 
     if (!incomingRefreshToken) {
-      throw new ApiError(400, "Unauthorized Request"); // throw an error if the refresh token is unauthorized
+      throw new ApiError(401, "Unauthorized Request"); // throw an error if the refresh token is unauthorized
     }
 
     // once we have the refresh token, we decode it to get the user id
@@ -212,21 +212,22 @@ const newAccessTokenFunction = async (req, res) => {
     );
 
     // we get the user with a query
-    const user = await User.findById(decodedToken?._id);
+    const user = await User.findById(decodedToken?.id);
 
     if (!user) {
-      throw new ApiError(400, "Invalid Refresh Token"); // throw an error if the user is not present
+      throw new ApiError(403, "Invalid user in the token payload"); // throw an error if the user is not present
     }
 
     // double checking if the incoming refresh token matches the one stored in the database
     if (decodedToken.uniqueToken !== user?.uniqueToken) {
-      throw new ApiError(400, "Refresh Token is expired or used");
+      throw new ApiError(403, "Refresh Token is expired or used");
     }
 
     // the cookie options
     const options = {
       httpOnly: true,
       secure: true,
+      sameSite: "Lax",
     };
 
     // getting the new access and the refresh tokens
@@ -245,7 +246,22 @@ const newAccessTokenFunction = async (req, res) => {
         )
       );
   } catch (error) {
-    throw new ApiError(400, error.message || "Invalid Refresh Token"); // if everything fails, the refresh token is invalid
+    // JWT errors (like signature mismatch or simple expiration)
+    if (
+      error.name === "JsonWebTokenError" ||
+      error.name === "TokenExpiredError"
+    ) {
+      return res
+        .status(403)
+        .json(
+          new ApiError(403, "Forbidden: Invalid or Expired JWT Signature.")
+        );
+    }
+    // Final fallback for other unexpected errors
+    console.error("Token Refresh Error:", error);
+    return res
+      .status(500)
+      .json(new ApiError(500, "Internal Server Error during token refresh."));
   }
 };
 
