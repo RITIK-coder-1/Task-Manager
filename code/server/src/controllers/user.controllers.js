@@ -11,7 +11,7 @@ import asyncHandler from "../utils/asyncHandler.js";
 import generateRandomTokenString from "../utils/generateRandomTokenString.js";
 
 // ----------------------------------------------
-// Function to generate access and refresh tokens on login and logout
+// Function to generate access and refresh tokens on logging in and logging out
 // ----------------------------------------------
 
 const generateTokens = async (userId) => {
@@ -189,6 +189,10 @@ const logoutFunction = async (req, res) => {
     .clearCookie("refreshToken", options)
     .json(new ApiResponse(200, {}, "User Logged Out Succesfully!"));
 };
+
+// ----------------------------------------------
+// New Access Token Controller (The function to generate a new access token whenever it is expired)
+// ----------------------------------------------
 
 // ----------------------------------------------
 // Error Handling
