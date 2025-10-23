@@ -163,12 +163,12 @@ const loginFunction = async (req, res) => {
 // ----------------------------------------------
 
 const logoutFunction = async (req, res) => {
-  const { userId } = req.user._id;
+  const userId = req.user._id;
   await User.findByIdAndUpdate(
     userId,
     {
       $set: {
-        refreshToken: undefined, // the refresh token should be changed to undefined once the user logs out
+        refreshTokenString: undefined, // the refresh token should be changed to undefined once the user logs out
       },
     },
     {
@@ -197,4 +197,4 @@ const registerUser = asyncHandler(registerUserFunction);
 const loginUser = asyncHandler(loginFunction);
 const logoutUser = asyncHandler(logoutFunction);
 
-export { registerUser, loginUser };
+export { registerUser, loginUser, logoutUser };
