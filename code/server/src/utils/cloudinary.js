@@ -60,4 +60,22 @@ const uploadOnCloudinary = async (filepath) => {
   }
 };
 
-export { uploadOnCloudinary }; // Export both for utility
+// delete from cloudinary
+
+const deleteFromCloudinary = async (fileUrl) => {
+  if (!fileUrl) {
+    console.error("The file doesn't exist on cloudinary!");
+  }
+
+  try {
+    await cloudinary.uploader.destroy(fileUrl);
+    console.log("The file has been successfully deleted from cloudinary!");
+  } catch (error) {
+    console.error(
+      "There was an error while deleting the file from cloudinary: ",
+      error
+    );
+  }
+};
+
+export { uploadOnCloudinary, deleteFromCloudinary }; // Export both for utility

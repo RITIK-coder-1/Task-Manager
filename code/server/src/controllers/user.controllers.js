@@ -5,7 +5,10 @@
 
 import ApiError from "../utils/apiError.js";
 import User from "../models/users.model.js";
-import { uploadOnCloudinary } from "../utils/cloudinary.js";
+import {
+  deleteFromCloudinary,
+  uploadOnCloudinary,
+} from "../utils/cloudinary.js";
 import ApiResponse from "../utils/apiError.js";
 import asyncHandler from "../utils/asyncHandler.js";
 import generateRandomTokenString from "../utils/generateRandomTokenString.js";
@@ -384,6 +387,58 @@ const updatePasswordFunction = async (req, res) => {
 };
 
 // ----------------------------------------------
+// Function to update the file (Profile Image)
+// ----------------------------------------------
+
+const updateFileFunction = async (req, res) => {
+  const user = await User.findById(req.user?._id);
+  const oldProfile = user.profilePic;
+
+  // getting the path of the file
+  const picPath = req.file?.path; // we're uploading a single file
+
+  // validating the path
+  if (!picPath) {
+    throw new ApiError(400, "Avatar File is missing");
+  }
+
+  // uploading the file on cloudinary
+  const newProfilePic = await uploadOnCloudinary(picPath);
+
+  // validating the cloudinary url
+  if (!newProfilePic.url) {
+    throw new ApiError(400, "Could not upload the new avatar file");
+  }
+
+  // updating the user file on database
+  const foundUser = await User.findByIdAndUpdate(
+    req.user?._id,
+    {
+      $set: {
+        profilePic: newProfilePic.url,
+      },
+    },
+    {
+      new: true,
+    }
+  ).select("-password -refreshToken");
+
+  if (!foundUser) {
+    throw new ApiError("The data couldn't be updated!");
+  }
+
+  // deleting the old file from cloudinary
+  try {
+    await deleteFromCloudinary(oldProfile); // Utility function runs and handles error internally
+  } catch (error) {
+    console.error("Non-critical cleanup failure:", error);
+  }
+
+  // sending a JSON API response
+  res.send(200).json(new ApiResponse(200, {}, "The file has been updated!"));
+};
+
+// ----------------------------------------------
 // Error Handling
 // ----------------------------------------------
 const registerUser = asyncHandler(registerUserFunction);
@@ -393,6 +448,7 @@ const newAccessToken = asyncHandler(newAccessTokenFunction);
 const getCurrentUser = asyncHandler(getUserFunction);
 const updateAccount = asyncHandler(updateAccountFunction);
 const updatePassword = asyncHandler(updatePasswordFunction);
+const updateFile = asyncHandler(updateFileFunction);
 
 export {
   registerUser,
@@ -402,4 +458,5 @@ export {
   getCurrentUser,
   updateAccount,
   updatePassword,
+  updateFile,
 };
