@@ -8,6 +8,10 @@ import {
   registerUser,
   loginUser,
   logoutUser,
+  updateAccount,
+  updatePassword,
+  updateFile,
+  newAccessToken,
 } from "../controllers/user.controllers.js";
 import verifyJWT from "../middlewares/auth.middleware.js";
 
@@ -18,22 +22,28 @@ const userRouter = Router(); // express router
 // - Register
 // - Log in
 // - Log Out
+// - New Access Token
+// - Update Details
+// - Update Password
+// - Update Profile
 // ----------------------------------------------
 
-userRouter.route("/register").post(
-  upload.fields([
-    {
-      name: "profilePicture",
-      maxCount: 1,
-    },
-  ]),
-  registerUser
-); // register the user on the register path
+userRouter.route("/register").post(upload.single("profilePic"), registerUser); // register the user on the register path
 
 userRouter.route("/login").post(loginUser); // login the user on the login path
 
-// secured routes (User should be logged in to access this)
+// secured routes (User should be logged in to access these)
 
 userRouter.route("/logout").post(verifyJWT, logoutUser); // log the user out on this path
+
+userRouter.route("/token/refresh").post(newAccessToken); // to issue a new access token end point
+
+userRouter.route("/details").patch(verifyJWT, updateAccount); // to update the user details
+
+userRouter.route("/password").patch(verifyJWT, updatePassword); // to update the password
+
+userRouter
+  .route("/profile")
+  .patch(verifyJWT, upload.single("profilePic"), updateFile); // to update the profie image
 
 export default userRouter; // exporting as default
