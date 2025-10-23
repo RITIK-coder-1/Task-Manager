@@ -107,36 +107,34 @@ const loginFunction = async (req, res) => {
   const { username, email, password } = req.body;
 
   // validating the input data
-  if (!username || !email)
-    throw new ApiError(400, "username or email is required!"); // at least one out of two is required
+  if (!username?.trim() && !email?.trim() && !password?.trim())
+    throw new ApiError(
+      400,
+      "At least one of the identifiers and password are required!"
+    ); // at least one out of two is required
 
   // checking if the input data exists in the database
+
   const existingUser = await User.findOne({
     $or: [{ username }, { email }], // return true if at least either of them is present
   });
+  const passwordValidator = existingUser?.isPasswordCorrect(password); // returns true if the password is correct (only if the user exists)
 
-  if (!existingUser) {
+  if (!existingUser || !passwordValidator)
     throw new ApiError(
-      404,
-      "the user isn't registered! Enter correct credentials or sign up."
+      401,
+      "Invalid credentials. Please check your username/email and password, or sign up!"
     );
-  }
-
-  // checking if the password entered is correct or not
-  const passwordValidator = existingUser.isPasswordCorrect(password); // returns true if the password is correct
-
-  if (!passwordValidator)
-    throw new ApiError(400, "The password isn't correct!");
 
   // if the user exists, we need to generate the access and refresh token
   const { accessToken, refreshToken } = await generateTokens(existingUser._id);
 
-  // fetching the user details without any sensitive information
-  const loggedInUser = await User.findById(existingUser._id).select(
-    "-password -refreshToken"
-  );
-
   // once the user has successfully logged in, we need to send in the cookies to the client
+
+  // deleting the sensitive field in the JSON resposne
+  const loggedInUser = existingUser.toObject(); // Convert to JS object
+  delete loggedInUser.password;
+  delete loggedInUser.refreshTokenString;
 
   const options = {
     httpOnly: true, // cookie can't be manipulated by the client
@@ -147,7 +145,9 @@ const loginFunction = async (req, res) => {
     .status(200)
     .cookie("accessToken", accessToken, options)
     .cookie("refreshToken", refreshToken, options)
-    .json(new ApiResponse(200, "The user has successfully logged in!"));
+    .json(
+      new ApiResponse(200, loggedInUser, "The user has successfully logged in!")
+    );
 };
 
 // ----------------------------------------------
