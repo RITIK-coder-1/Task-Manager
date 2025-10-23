@@ -15,7 +15,7 @@ const verifyJwtFunction = async (req, _, next) => {
       req.header("Authorization")?.replace("Bearer ", ""); // replace "Bearer <token>" to "<token>"
 
     if (!token) {
-      throw new ApiError(400, "Unauthorized request");
+      throw new ApiError(401, "Unauthorized request");
     } // throw an error if there is no access token
 
     // decoding the payload of the token (only if it is valid)
@@ -23,18 +23,21 @@ const verifyJwtFunction = async (req, _, next) => {
 
     // the user
     const user = await User.findById(decodedToken?._id).select(
-      "-password -refreshToken"
+      "-password -refreshTokenString"
     );
 
     if (!user) {
-      throw new ApiError(400, "Invalid Access Token");
+      throw new ApiError(401, "Invalid Access Token");
     } // if the user doesn't exist with the specific token
 
     req.user = user; // adding the user to the request object for later processing
 
     next();
   } catch (error) {
-    throw new ApiError(400, "Could not verify the access token");
+    throw new ApiError(
+      401,
+      "Unauthorized: Access token is invalid or expired."
+    );
   }
 };
 
