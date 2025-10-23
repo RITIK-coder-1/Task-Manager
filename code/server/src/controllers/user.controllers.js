@@ -159,9 +159,16 @@ const loginFunction = async (req, res) => {
 };
 
 // ----------------------------------------------
+// Logout Controller (The function to logout a registered user)
+// ----------------------------------------------
+
+const logoutFunction = async (req, res) => {};
+
+// ----------------------------------------------
 // Error Handling
 // ----------------------------------------------
 const registerUser = asyncHandler(registerUserFunction);
 const loginUser = asyncHandler(loginFunction);
+const logoutUser = asyncHandler(logoutFunction);
 
 export { registerUser, loginUser };
