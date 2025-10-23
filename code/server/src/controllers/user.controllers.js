@@ -19,12 +19,8 @@ const registerUserFunction = async (req, res) => {
   const { profilePicturePath } = req.files; // the file uploaded
 
   // checking if all the required fields are present or not
-  const isRequiredAbsent = [fullName, username, password, email].map(
-    (field) => {
-      if (field.trim() === "") {
-        return true; // if at least one field is not entered, it will store true
-      }
-    }
+  const isRequiredAbsent = [fullName, username, password, email].some(
+    (field) => field.trim() === "" // if at least one field is not entered, it will store true
   );
 
   if (isRequiredAbsent) {
@@ -59,21 +55,23 @@ const registerUserFunction = async (req, res) => {
   });
 
   // last validation if the user has been registered
-  const createdUser = await User.findById(user._id).select(
-    "-password -refreshTokenString"
-  ); // if the user exists return true
-
-  if (!createdUser) {
+  if (!user) {
+    // MongoDB returns a document only if it is created successfully
     throw new ApiError(500, "There was a problem while registering the user!");
   }
 
-  // if the user has been validated and registered successfully, return a success response
+  // The user data is going to be sent in to JSON response without the password and the refresh token string
+  // Convert Mongoose document to a plain JS object for safer manipulation
+  const createdUser = user.toObject();
+  delete createdUser.password;
+  delete createdUser.refreshTokenString;
 
+  // if the user has been validated and registered successfully, return a success response
   return res
-    .status(200)
+    .status(201)
     .json(
       new ApiResponse(
-        200,
+        201,
         createdUser,
         "The user has been registered successfully!"
       )
