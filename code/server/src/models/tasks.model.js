@@ -53,6 +53,12 @@ const taskSchema = new mongoose.Schema(
       required: false,
     },
 
+    // the users can add images to the tasks (optional)
+    image: {
+      type: String,
+      required: false,
+    },
+
     // the owner of the task
     owner: {
       type: mongoose.Schema.Types.ObjectId,
