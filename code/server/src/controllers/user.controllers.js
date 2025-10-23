@@ -266,11 +266,26 @@ const newAccessTokenFunction = async (req, res) => {
 };
 
 // ----------------------------------------------
+// Function to fetch the user details
+// ----------------------------------------------
+
+const getUserFunction = async (req, res) => {
+  return res
+    .status(200)
+    .json(200, req.user, "Current User Fetched Successfully!");
+};
+
+// ----------------------------------------------
+// Function to update the user account
+// ----------------------------------------------
+
+// ----------------------------------------------
 // Error Handling
 // ----------------------------------------------
 const registerUser = asyncHandler(registerUserFunction);
 const loginUser = asyncHandler(loginFunction);
 const logoutUser = asyncHandler(logoutFunction);
 const newAccessToken = asyncHandler(newAccessTokenFunction);
+const getCurrentUser = asyncHandler(getUserFunction);
 
-export { registerUser, loginUser, logoutUser, newAccessToken };
+export { registerUser, loginUser, logoutUser, newAccessToken, getCurrentUser };
