@@ -8,6 +8,26 @@ import User from "../models/users.model.js";
 import { uploadOnCloudinary } from "../utils/cloudinary.js";
 import ApiResponse from "../utils/apiError.js";
 import asyncHandler from "../utils/asyncHandler.js";
+import generateRandomTokenString from "../utils/generateRandomTokenString.js";
+
+// ----------------------------------------------
+// Function to generate access and refresh tokens on login and logout
+// ----------------------------------------------
+
+const generateTokens = async (userId) => {
+  const randomString = generateRandomTokenString(); // this random set of strings is used with the refresh token to validate the user
+  try {
+    const user = await User.findById(userId);
+    const accessToken = user.generateAccessToken();
+    const refreshToken = user.generateRefreshToken(randomString);
+
+    await user.save({ validateBeforeSave: false }); // we don't validate each field whenever the user logs in or out
+
+    return { accessToken, refreshToken };
+  } catch (error) {
+    throw new ApiError(500, "Could not generate tokens");
+  }
+};
 
 // ----------------------------------------------
 // Register Controller (The function to register a new user on the platform)
@@ -78,6 +98,62 @@ const registerUserFunction = async (req, res) => {
     );
 };
 
-const registerUser = asyncHandler(registerUserFunction); // error handling
+// ----------------------------------------------
+// Login Controller (The function to login a registered user)
+// ----------------------------------------------
 
-export { registerUser };
+const loginFunction = async (req, res) => {
+  // getting data from the client request
+  const { username, email, password } = req.body;
+
+  // validating the input data
+  if (!username || !email)
+    throw new ApiError(400, "username or email is required!"); // at least one out of two is required
+
+  // checking if the input data exists in the database
+  const existingUser = await User.findOne({
+    $or: [{ username }, { email }], // return true if at least either of them is present
+  });
+
+  if (!existingUser) {
+    throw new ApiError(
+      404,
+      "the user isn't registered! Enter correct credentials or sign up."
+    );
+  }
+
+  // checking if the password entered is correct or not
+  const passwordValidator = existingUser.isPasswordCorrect(password); // returns true if the password is correct
+
+  if (!passwordValidator)
+    throw new ApiError(400, "The password isn't correct!");
+
+  // if the user exists, we need to generate the access and refresh token
+  const { accessToken, refreshToken } = await generateTokens(existingUser._id);
+
+  // fetching the user details without any sensitive information
+  const loggedInUser = await User.findById(existingUser._id).select(
+    "-password -refreshToken"
+  );
+
+  // once the user has successfully logged in, we need to send in the cookies to the client
+
+  const options = {
+    httpOnly: true, // cookie can't be manipulated by the client
+    secure: true, // cookie is only sent over HTTPS
+  };
+
+  return res
+    .status(200)
+    .cookie("accessToken", accessToken, options)
+    .cookie("refreshToken", refreshToken, options)
+    .json(new ApiResponse(200, "The user has successfully logged in!"));
+};
+
+// ----------------------------------------------
+// Error Handling
+// ----------------------------------------------
+const registerUser = asyncHandler(registerUserFunction);
+const loginUser = asyncHandler(loginFunction);
+
+export { registerUser, loginUser };
