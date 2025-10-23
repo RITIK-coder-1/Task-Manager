@@ -162,7 +162,33 @@ const loginFunction = async (req, res) => {
 // Logout Controller (The function to logout a registered user)
 // ----------------------------------------------
 
-const logoutFunction = async (req, res) => {};
+const logoutFunction = async (req, res) => {
+  const { userId } = req.user._id;
+  await User.findByIdAndUpdate(
+    userId,
+    {
+      $set: {
+        refreshToken: undefined, // the refresh token should be changed to undefined once the user logs out
+      },
+    },
+    {
+      new: true, // it returns the updated document
+    }
+  );
+
+  // cookie security options
+  const options = {
+    httpOnly: true,
+    secure: true,
+  };
+
+  // clearing the cookies and the tokens once the user is logged out successfully
+  return res
+    .status(200)
+    .clearCookie("accessToken", options)
+    .clearCookie("refreshToken", options)
+    .json(new ApiResponse(200, {}, "User Logged Out Succesfully!"));
+};
 
 // ----------------------------------------------
 // Error Handling
