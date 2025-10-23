@@ -10,6 +10,7 @@ import ApiResponse from "../utils/apiError.js";
 import asyncHandler from "../utils/asyncHandler.js";
 import generateRandomTokenString from "../utils/generateRandomTokenString.js";
 import jwt from "jsonwebtoken";
+import bcrypt from "bcrypt";
 
 // ----------------------------------------------
 // Function to generate access and refresh tokens on logging in and logging out
@@ -341,6 +342,48 @@ const updateAccountFunction = async (req, res) => {
 };
 
 // ----------------------------------------------
+// Function to update the password
+// ----------------------------------------------
+
+const updatePasswordFunction = async (req, res) => {
+  // getting the new and old passwords
+  const { oldPassword, newPassword } = req.body;
+
+  // getting the user and checking if the entered password is correct or not
+  const user = await User.findById(req.user?._id);
+  const isPasswordCorrect = await user.isPasswordCorrect(oldPassword);
+
+  if (!isPasswordCorrect) {
+    throw new ApiError(400, "Invalid Old Password");
+  }
+
+  // Although the password is always hashed before being saved as per the function defined in the user model, a bug can potentially revoke that. So, it is safe to directly hash the password here
+  let hashedPassword;
+  try {
+    hashedPassword = await bcrypt.hash(newPassword, 10); // hash the passoword with 10 salt rounds
+    console.log("New Password successfully hashed before saving.");
+  } catch (error) {
+    // If hashing fails
+    throw new ApiError(500, "Server Error: Password processing failed.");
+  }
+
+  // updating the password
+  await User.findByIdAndUpdate(user?.id, {
+    $set: { password: hashedPassword, uniqueToken: null },
+  });
+
+  return res
+    .status(200)
+    .json(
+      new ApiResponse(
+        200,
+        { passwordResetRequired: true },
+        "Password Changed Successfully!"
+      )
+    );
+};
+
+// ----------------------------------------------
 // Error Handling
 // ----------------------------------------------
 const registerUser = asyncHandler(registerUserFunction);
@@ -349,6 +392,7 @@ const logoutUser = asyncHandler(logoutFunction);
 const newAccessToken = asyncHandler(newAccessTokenFunction);
 const getCurrentUser = asyncHandler(getUserFunction);
 const updateAccount = asyncHandler(updateAccountFunction);
+const updatePassword = asyncHandler(updatePasswordFunction);
 
 export {
   registerUser,
@@ -357,4 +401,5 @@ export {
   newAccessToken,
   getCurrentUser,
   updateAccount,
+  updatePassword,
 };
