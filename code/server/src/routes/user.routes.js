@@ -4,6 +4,7 @@
 // ----------------------------------------------
 
 import { Router } from "express"; // importing the router
+import upload from "../middlewares/multer.middleware.js";
 import {
   registerUser,
   loginUser,

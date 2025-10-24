@@ -3,9 +3,9 @@
 // This middleware verifies the access token of users before logging them out
 // ----------------------------------------------
 
-import asyncHandler from "../utils/asyncHandler";
+import asyncHandler from "../utils/asyncHandler.js";
 import jwt from "jsonwebtoken";
-import User from "../models/users.model";
+import User from "../models/users.model.js";
 
 const verifyJwtFunction = async (req, _, next) => {
   // the client can send a cookie or a custom header
