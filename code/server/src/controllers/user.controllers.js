@@ -41,10 +41,9 @@ const generateTokens = async (userId) => {
 const registerUserFunction = async (req, res) => {
   // taking all the input fields from the client request
   const { fullName, username, password, email } = req.body;
-  const { profilePicturePath } = req.files; // the file uploaded
 
   // checking if all the required fields are present or not
-  const isRequiredAbsent = [fullName, username, password, email].some(
+  const isRequiredAbsent = [fullName.firstName, username, password, email].some(
     (field) => field?.trim() === "" // if at least one field is not entered, it will store true
   );
 
@@ -61,14 +60,20 @@ const registerUserFunction = async (req, res) => {
     throw new ApiError(400, "The user is already registered!"); // if the user is not new, throw an error
   }
 
-  // once the new user is validated, we save all the details of the user
-
   // uploading the profile image
-  const profilePicture = await uploadOnCloudinary(profilePicturePath);
+  let profilePicture = "";
+  if (req.file) {
+    // the profile picture should be uploaded only if it is sent and the req.file is valid
+    const { profilePicturePath } = req.file;
 
-  if (!profilePicture) {
-    throw new ApiError(400, "The profile picture wasn't uploaded!"); // if cloudinary returns null, the profile pic wasn't uploaded
+    const profilePicture = await uploadOnCloudinary(profilePicturePath);
+
+    if (!profilePicture) {
+      throw new ApiError(400, "The profile picture wasn't uploaded!"); // if cloudinary returns null, the profile pic wasn't uploaded
+    }
   }
+
+  // once the new user is validated, we save all the details of the user
 
   // saving the user data in the database
   const user = await User.create({
