@@ -121,7 +121,82 @@ const retrieveTaskFunction = async (req, res) => {
 // Controller to update a task
 // ----------------------------------------------
 
-const updateTaskFunction = async (req, res) => {};
+const updateTaskFunction = async (req, res) => {
+  // retrieving the data to be updated
+  const { title, description, priority, isCompleted, category, imagePath } =
+    req.body;
+  const taskId = req.params.taskId; // the task id
+  const existingTask = await Task.findById(taskId); // the current task
+  const oldImage = existingTask.image; // the old image to be deleted after the new image is uploaded
+
+  // checking if the task belongs to the user
+  const userId = req.user._id;
+  if (!existingTask || existingTask.owner.toString() !== userId.toString()) {
+    throw new ApiError(403, "Forbidden: You do not own this task.");
+  }
+
+  // checking if all the values are properly entered or not (updated or not updated)
+
+  if (title?.trim() === "") {
+    throw new ApiError(400, "The title can not be empty!");
+  }
+
+  // checking if the priority is limited to the given options only
+  const validPriorities = ["Low", "Medium", "High", "Urgent"];
+
+  if (!priority || !validPriorities.includes(priority)) {
+    throw new ApiError(
+      400,
+      `Invalid priority value: "${priority}". Must be one of: ${validPriorities.join(
+        ", "
+      )}.`
+    );
+  }
+
+  // checking if isCompleted a boolean or not
+  if (isCompleted !== true && isCompleted !== false) {
+    throw new ApiError(400, "Completion should only be a boolean!");
+  }
+
+  // updating the image
+  const image = await uploadOnCloudinary(imagePath);
+
+  // updating the task
+  const task = await Task.findByIdAndUpdate(
+    taskId,
+    {
+      $set: {
+        description: description || "",
+        category: category || "unspecified",
+        priority,
+        title,
+        isCompleted,
+        image: image.url || "",
+      },
+    },
+    {
+      new: true,
+    }
+  );
+
+  // checking if the task is valid
+  if (!task) {
+    throw new ApiError(400, "The task could not be updated!");
+  }
+
+  // deleting the old image from cloudinary
+  try {
+    await deleteFromCloudinary(oldImage); // Utility function runs and handles error internally
+  } catch (error) {
+    console.error("Non-critical cleanup failure:", error);
+  }
+
+  return res
+    .status(200)
+    .json(
+      new ApiResponse(200, task, "The task has been successfully updated!")
+    );
+};
 
 // ----------------------------------------------
 // Controller to delete a new task

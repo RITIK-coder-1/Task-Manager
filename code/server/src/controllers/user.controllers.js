@@ -319,13 +319,13 @@ const updateAccountFunction = async (req, res) => {
   // finding the user and updating its values
 
   const user = await User.findByIdAndUpdate(
-    req.user?._id,
+    _id,
     {
       $set: {
         // it overrides the previous values
-        fullname: fullname,
-        username: username,
-        email: email,
+        fullname,
+        username,
+        email,
       },
     },
     {
