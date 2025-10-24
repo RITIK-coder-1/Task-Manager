@@ -221,7 +221,40 @@ const updateTaskFunction = async (req, res) => {
 // Controller to delete a new task
 // ----------------------------------------------
 
-const deleteTaskFunction = async (req, res) => {};
+const deleteTaskFunction = async (req, res) => {
+  const userId = req.user?._id; // the user id
+  const taskId = req.params?.taskId; // the task id
+
+  // checking if both the ids are correct
+  if (!userId) {
+    throw new ApiError(400, "Invalid user!");
+  }
+  if (!taskId) {
+    throw new ApiError(400, "Invalid Task!");
+  }
+
+  // finding the task and deleting it
+  const task = await Task.findOneAndDelete({ _id: taskId, owner: userId });
+  if (!task) {
+    throw new ApiError(
+      404,
+      `The particular task: ${taskId} by the user: ${userId} doesn't exist!`
+    );
+  }
+  const image = task.image; // the deleted document is returned
+
+  // once the task is deleted, we need to delete any associated image on cloudinary too
+  // using 'image' to check if a URL exists
+  if (image && image.trim() !== "") {
+    try {
+      await deleteFromCloudinary(image);
+    } catch (error) {
+      console.error("Non-critical cleanup failure:", error);
+    }
+  }
+
+  return res.status.json(200, null, "The task has been successfully deleted!");
+};
 
 // ----------------------------------------------
 // Error Handling
