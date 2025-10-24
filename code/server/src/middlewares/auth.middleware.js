@@ -8,37 +8,30 @@ import jwt from "jsonwebtoken";
 import User from "../models/users.model";
 
 const verifyJwtFunction = async (req, _, next) => {
-  try {
-    // the client can send a cookie or a custom header
-    const token =
-      req.cookies?.accessToken ||
-      req.header("Authorization")?.replace("Bearer ", ""); // replace "Bearer <token>" to "<token>"
+  // the client can send a cookie or a custom header
+  const token =
+    req.cookies?.accessToken ||
+    req.header("Authorization")?.replace("Bearer ", ""); // replace "Bearer <token>" to "<token>"
 
-    if (!token) {
-      throw new ApiError(401, "Unauthorized request");
-    } // throw an error if there is no access token
+  if (!token) {
+    throw new ApiError(401, "Unauthorized request");
+  } // throw an error if there is no access token
 
-    // decoding the payload of the token (only if it is valid)
-    const decodedToken = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
+  // decoding the payload of the token (only if it is valid)
+  const decodedToken = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
 
-    // the user
-    const user = await User.findById(decodedToken?._id).select(
-      "-password -refreshTokenString"
-    );
+  // the user
+  const user = await User.findById(decodedToken?._id).select(
+    "-password -refreshTokenString"
+  );
 
-    if (!user) {
-      throw new ApiError(401, "Invalid Access Token");
-    } // if the user doesn't exist with the specific token
+  if (!user) {
+    throw new ApiError(401, "Invalid Access Token");
+  } // if the user doesn't exist with the specific token
 
-    req.user = user; // adding the user to the request object for later processing
+  req.user = user; // adding the user to the request object for later processing
 
-    next();
-  } catch (error) {
-    throw new ApiError(
-      401,
-      "Unauthorized: Access token is invalid or expired."
-    );
-  }
+  next();
 };
 
 const verifyJwt = asyncHandler(verifyJwtFunction);
