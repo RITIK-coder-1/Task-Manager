@@ -23,5 +23,6 @@ const taskRouter = Router();
 // ----------------------------------------------
 
 taskRouter.route("/create").post(verifyJwt, createTask); // route to create new tasks
+taskRouter.route("/:taskId").post(verifyJwt, retrieveTask); // route to get a particular task
 
 export default taskRouter;
