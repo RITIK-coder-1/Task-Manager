@@ -12,7 +12,7 @@ import mongoose from "mongoose"; // importing mongoose
 const taskSchema = new mongoose.Schema(
   {
     // the name of the task
-    name: {
+    title: {
       type: String,
       required: true,
       unique: false,

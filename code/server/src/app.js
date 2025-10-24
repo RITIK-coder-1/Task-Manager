@@ -45,9 +45,13 @@ app.use(cookieParser()); // parsing cookies manually because express doesn't do 
 // Routes
 // ----------------------------------------------
 import statusRouter from "./routes/status.routes.js"; // Importing the authentication route
+import userRouter from "./routes/user.routes.js";
 
 // Simple status check
 app.use("/api/v1", statusRouter);
+
+// User routes
+app.use("/api/v1/users", userRouter);
 
 // ----------------------------------------------
 // Error Handlers
