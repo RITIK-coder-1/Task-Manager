@@ -123,56 +123,75 @@ const retrieveTaskFunction = async (req, res) => {
 
 const updateTaskFunction = async (req, res) => {
   // retrieving the data to be updated
-  const { title, description, priority, isCompleted, category, imagePath } =
-    req.body;
-  const taskId = req.params.taskId; // the task id
-  const existingTask = await Task.findById(taskId); // the current task
+  const { title, description, priority, isCompleted, category } = req.body;
+  const imagePath = req.file.path;
+  const taskId = req.params?.taskId; // the task id
+  const userId = req.user?._id; // the user id
+  const existingTask = await Task.findOne({ _id: taskId, owner: userId }); // the current task
   const oldImage = existingTask.image; // the old image to be deleted after the new image is uploaded
 
   // checking if the task belongs to the user
-  const userId = req.user._id;
-  if (!existingTask || existingTask.owner.toString() !== userId.toString()) {
-    throw new ApiError(403, "Forbidden: You do not own this task.");
-  }
-
-  // checking if all the values are properly entered or not (updated or not updated)
-
-  if (title?.trim() === "") {
-    throw new ApiError(400, "The title can not be empty!");
-  }
-
-  // checking if the priority is limited to the given options only
-  const validPriorities = ["Low", "Medium", "High", "Urgent"];
-
-  if (!priority || !validPriorities.includes(priority)) {
+  if (!existingTask) {
     throw new ApiError(
-      400,
-      `Invalid priority value: "${priority}". Must be one of: ${validPriorities.join(
-        ", "
-      )}.`
+      403,
+      `There was an issue in retriving the task: ${taskId} by this user: ${userId}`
     );
   }
 
-  // checking if isCompleted a boolean or not
-  if (isCompleted !== true && isCompleted !== false) {
-    throw new ApiError(400, "Completion should only be a boolean!");
+  // checking if all the values are properly entered (only the updated ones!)
+
+  if (title !== undefined) {
+    if (title?.trim() === "") {
+      throw new ApiError(400, "The title can not be empty!");
+    }
+  }
+
+  if (priority !== undefined) {
+    // checking if the priority is limited to the given options only
+    const validPriorities = ["Low", "Medium", "High", "Urgent"];
+
+    if (!priority || !validPriorities.includes(priority)) {
+      throw new ApiError(
+        400,
+        `Invalid priority value: "${priority}". Must be one of: ${validPriorities.join(
+          ", "
+        )}.`
+      );
+    }
+  }
+
+  if (isCompleted !== undefined) {
+    // checking if isCompleted a boolean or not
+    if (isCompleted !== true && isCompleted !== false) {
+      throw new ApiError(400, "Completion should only be a boolean!");
+    }
   }
 
   // updating the image
-  const image = await uploadOnCloudinary(imagePath);
 
-  // updating the task
+  let newImage = oldImage;
+  if (imagePath !== undefined) {
+    // update the image only if a new image is sent
+    newImage = await uploadOnCloudinary(imagePath);
+    if (!newImage) {
+      throw new ApiError(500, "The image could not be uploaded!");
+    }
+  }
+
+  // updating the entire task
+  const updatedTask = {};
+
+  // Only add a field if it is present (not undefined).
+  if (title !== undefined) updatedTask.title = title;
+  if (description !== undefined) updatedTask.description = description || "";
+  if (priority !== undefined) updatedTask.priority = priority || "Low";
+  if (isCompleted !== undefined) updatedTask.isCompleted = isCompleted || false;
+  if (category !== undefined) updatedTask.category = category || "unspecified";
+
   const task = await Task.findByIdAndUpdate(
     taskId,
     {
-      $set: {
-        description: description || "",
-        category: category || "unspecified",
-        priority,
-        title,
-        isCompleted,
-        image: image.url || "",
-      },
+      $set: updateTask,
     },
     {
       new: true,
