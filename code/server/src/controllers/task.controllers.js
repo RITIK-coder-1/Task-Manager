@@ -94,7 +94,28 @@ const createTaskFunction = async (req, res) => {
 // Controller to retrive a task
 // ----------------------------------------------
 
-const retrieveTaskFunction = async (req, res) => {};
+const retrieveTaskFunction = async (req, res) => {
+  const userId = req.user._id; // the user id
+  const taskId = req.params.taskId; // the task id
+
+  if (!userId) {
+    // Only authenticated users can read tasks!
+    throw new ApiError(401, "Authentication required to retrive task.");
+  }
+
+  // fetching details from the database
+  const task = await Task.findOne({ owner: userId, _id: taskId }); // only the task that is owned by this user and it has the specific id
+
+  if (!task) {
+    throw new ApiError(404, "The particular task doesn't exist!");
+  }
+
+  return res
+    .status(200)
+    .json(
+      new ApiResponse(200, task, "The task has been retrieved successfully!")
+    );
+};
 
 // ----------------------------------------------
 // Controller to update a task
