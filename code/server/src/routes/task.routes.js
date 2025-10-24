@@ -10,6 +10,7 @@ import {
   updateTask,
   deleteTask,
 } from "../controllers/task.controllers.js";
+import verifyJwt from "../middlewares/auth.middleware.js";
 
 const taskRouter = Router();
 
@@ -21,4 +22,6 @@ const taskRouter = Router();
 // - Delete
 // ----------------------------------------------
 
-taskRouter.route("/create").post(createTask);
+taskRouter.route("/create").post(verifyJwt, createTask); // route to create new tasks
+
+export default taskRouter;
