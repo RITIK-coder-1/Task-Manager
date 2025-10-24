@@ -22,7 +22,11 @@ import bcrypt from "bcrypt";
 const generateTokens = async (userId) => {
   const randomString = generateRandomTokenString(); // this random set of strings is used with the refresh token to validate the user
   try {
-    const user = await User.findById(userId);
+    const user = await User.findByIdAndUpdate(userId, {
+      $set: {
+        refreshTokenString: randomString, // saving the random string for security purposes
+      },
+    });
     const accessToken = user.generateAccessToken();
     const refreshToken = user.generateRefreshToken(randomString);
 
