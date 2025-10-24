@@ -9,7 +9,7 @@ import {
   deleteFromCloudinary,
   uploadOnCloudinary,
 } from "../utils/cloudinary.js";
-import ApiResponse from "../utils/apiError.js";
+import ApiResponse from "../utils/apiResponse.js";
 import asyncHandler from "../utils/asyncHandler.js";
 import generateRandomTokenString from "../utils/generateRandomTokenString.js";
 import jwt from "jsonwebtoken";
@@ -41,6 +41,10 @@ const generateTokens = async (userId) => {
 const registerUserFunction = async (req, res) => {
   // taking all the input fields from the client request
   const { fullName, username, password, email } = req.body;
+
+  if (fullName === undefined) {
+    throw new ApiError(400, "You should input your fullname!!"); // we have to explicitly check the fullname because it is an object
+  }
 
   // checking if all the required fields are present or not
   const isRequiredAbsent = [fullName.firstName, username, password, email].some(
@@ -117,7 +121,10 @@ const loginFunction = async (req, res) => {
   const { username, email, password } = req.body;
 
   // validating the input data
-  if (!username?.trim() && !email?.trim() && !password?.trim())
+  if (
+    (username?.trim() === "" && email?.trim() === "") ||
+    password?.trim() === ""
+  )
     throw new ApiError(
       400,
       "At least one of the identifiers and password are required!"
@@ -128,7 +135,7 @@ const loginFunction = async (req, res) => {
   const existingUser = await User.findOne({
     $or: [{ username }, { email }], // return true if at least either of them is present
   });
-  const passwordValidator = existingUser?.isPasswordCorrect(password); // returns true if the password is correct (only if the user exists)
+  const passwordValidator = await existingUser?.isPasswordCorrect(password); // returns true if the password is correct (only if the user exists)
 
   if (!existingUser || !passwordValidator)
     throw new ApiError(

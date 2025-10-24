@@ -109,7 +109,8 @@ userSchema.methods.isPasswordCorrect = async function (password) {
   try {
     // 'password' is the plain text string submitted by the user.
     // 'this.password' is the hashed string retrieved from the database document.
-    return await bcrypt.compare(password, this.password); // Returns a boolean
+    const condition = await bcrypt.compare(password, this.password); // Returns a boolean
+    return condition;
   } catch (error) {
     // If the comparison fails due to a library error (e.g., malformed hash)
     console.error("Critical error during password comparison:", error.message);
