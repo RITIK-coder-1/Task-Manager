@@ -41,16 +41,11 @@ const taskSchema = new mongoose.Schema(
       default: "Low",
     },
 
-    // Scheduling to organize tasks chronologically
-    dueDate: {
-      type: Date,
-      required: false,
-    },
-
     // the type of task
     category: {
       type: String,
       required: false,
+      default: "unspecified",
     },
 
     // the users can add images to the tasks (optional)
