@@ -9,7 +9,7 @@ import axios from "axios";
 function Test() {
   const [data, setData] = useState([]);
   useEffect(() => {
-    // Api request vai axios
+    // Api request via axios
 
     axios.get("/api/v1/test").then((data) => {
       setData(data.data);
