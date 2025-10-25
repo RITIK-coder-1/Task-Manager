@@ -308,12 +308,21 @@ const getUserFunction = async (req, res) => {
 
 const updateAccountFunction = async (req, res) => {
   // getting the data to update
-  const { fullname, username, email, _id } = req.body; // once a field is updated, all the fields should be submited as they are
+  const { fullName, username, email } = req.body; // once a field is updated, all the fields should be submited as they are
+  const userId = req.user?._id; // the user id
 
   // validating the data to be updated
-  const isEmpty = [fullname, username, email].some(
+  const isEmpty = [username, email].some(
     (field) => field?.trim() === "" // return true if at least one of the fields is empty
   );
+
+  // only if the fullname is modified
+  if (fullName !== undefined) {
+    if (!fullName.firstName?.trim()) {
+      // the first name has to be entered
+      throw new ApiError(400, "The first name can not be empty!");
+    }
+  }
 
   if (isEmpty) {
     throw new ApiError(400, "All Fields Are Required!");
@@ -323,7 +332,7 @@ const updateAccountFunction = async (req, res) => {
 
   const existingEmail = await User.findOne({
     email: email,
-    _id: { $ne: _id }, // find excluding the current user
+    _id: { $ne: userId }, // find excluding the current user
   });
 
   if (existingEmail) {
@@ -332,7 +341,7 @@ const updateAccountFunction = async (req, res) => {
 
   const existingUsername = await User.findOne({
     username: username,
-    _id: { $ne: _id }, // find excluding the current user
+    _id: { $ne: userId }, // find excluding the current user
   });
 
   if (existingUsername) {
@@ -342,13 +351,13 @@ const updateAccountFunction = async (req, res) => {
   // finding the user and updating its values
 
   const user = await User.findByIdAndUpdate(
-    _id,
+    userId,
     {
       $set: {
         // it overrides the previous values
-        fullname,
-        username,
-        email,
+        fullName: fullName,
+        username: username,
+        email: email,
       },
     },
     {
