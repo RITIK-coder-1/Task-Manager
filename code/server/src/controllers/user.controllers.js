@@ -298,6 +298,14 @@ const newAccessTokenFunction = async (req, res) => {
 // ----------------------------------------------
 
 const getUserFunction = async (req, res) => {
+  // only the logged in user can view this
+  const userId = req.user?._id;
+  const user = await User.findById(userId);
+  const refreshTokenString = user.refreshTokenString;
+  if (!refreshTokenString) {
+    throw new ApiError(400, "You're unauthorized to view this!");
+  }
+
   return res
     .status(200)
     .json(new ApiResponse(200, req.user, "Current User Fetched Successfully!"));

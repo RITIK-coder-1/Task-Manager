@@ -24,11 +24,11 @@ const userRouter = Router(); // express router
 // - Register
 // - Log in
 // - Log Out
+// - Getting the current user
 // - New Access Token
 // - Update Details
 // - Update Password
 // - Update Profile
-// - Getting the current user
 // ----------------------------------------------
 
 userRouter.route("/register").post(upload.single("profilePic"), registerUser); // register the user on the register path
@@ -39,7 +39,9 @@ userRouter.route("/login").post(loginUser); // login the user on the login path
 
 userRouter.route("/logout").post(verifyJWT, logoutUser); // log the user out on this path
 
-userRouter.route("/token/refresh").post(verifyJWT, newAccessToken); // to issue a new access token end point
+userRouter.route("/:userId").get(verifyJWT, getCurrentUser); // getting the current user
+
+userRouter.route("/:userId/token/refresh").post(verifyJWT, newAccessToken); // to issue a new access token end point
 
 userRouter.route("/:userId/details").patch(verifyJWT, updateAccount); // to update the user details
 
@@ -48,7 +50,5 @@ userRouter.route("/:userId/password").patch(verifyJWT, updatePassword); // to up
 userRouter
   .route("/:userId/profile")
   .patch(verifyJWT, upload.single("profilePic"), updateFile); // to update the profie image
-
-userRouter.route("/:userId").get(verifyJWT, getCurrentUser); // getting the current user
 
 export default userRouter; // exporting as default
