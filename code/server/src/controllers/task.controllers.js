@@ -11,6 +11,7 @@ import {
   deleteFromCloudinary,
   uploadOnCloudinary,
 } from "../utils/cloudinary.js";
+import mongoose from "mongoose";
 
 // ----------------------------------------------
 // Controller to create a new task
@@ -235,9 +236,15 @@ const deleteTaskFunction = async (req, res) => {
     throw new ApiError(400, "Invalid Task!");
   }
 
+  if (!mongoose.Types.ObjectId.isValid(taskId)) {
+    throw new ApiError(400, "Invalid task id format!");
+  }
+
   // finding the task and deleting it
   const task = await Task.findOneAndDelete({ _id: taskId, owner: userId });
   if (!task) {
+    console.log(task);
+
     throw new ApiError(
       404,
       `The particular task: ${taskId} by the user: ${userId} doesn't exist!`
@@ -255,7 +262,9 @@ const deleteTaskFunction = async (req, res) => {
     }
   }
 
-  return res.status.json(200, null, "The task has been successfully deleted!");
+  return res
+    .status(200)
+    .json(200, null, "The task has been successfully deleted!");
 };
 
 // ----------------------------------------------
