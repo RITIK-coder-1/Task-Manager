@@ -184,18 +184,25 @@ const loginFunction = async (req, res) => {
 // ----------------------------------------------
 
 const logoutFunction = async (req, res) => {
-  const userId = req.user._id;
-  await User.findByIdAndUpdate(
+  const userId = req.user?._id;
+
+  if (!userId) {
+    throw new ApiError(400, "Invalid user id!");
+  }
+
+  const user = await User.findByIdAndUpdate(
     userId,
     {
       $set: {
-        refreshTokenString: undefined, // the refresh token should be changed to undefined once the user logs out
+        refreshTokenString: null, // the refresh token should be changed to undefined once the user logs out
       },
     },
     {
       new: true, // it returns the updated document
     }
   );
+
+  console.log(user);
 
   // cookie security options
   const options = {
@@ -292,7 +299,7 @@ const newAccessTokenFunction = async (req, res) => {
 const getUserFunction = async (req, res) => {
   return res
     .status(200)
-    .json(200, req.user, "Current User Fetched Successfully!");
+    .json(new ApiResponse(200, req.user, "Current User Fetched Successfully!"));
 };
 
 // ----------------------------------------------

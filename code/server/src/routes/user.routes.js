@@ -13,6 +13,7 @@ import {
   updatePassword,
   updateFile,
   newAccessToken,
+  getCurrentUser,
 } from "../controllers/user.controllers.js";
 import verifyJWT from "../middlewares/auth.middleware.js";
 
@@ -27,6 +28,7 @@ const userRouter = Router(); // express router
 // - Update Details
 // - Update Password
 // - Update Profile
+// - Getting the current user
 // ----------------------------------------------
 
 userRouter.route("/register").post(upload.single("profilePic"), registerUser); // register the user on the register path
@@ -46,5 +48,7 @@ userRouter.route("/password").patch(verifyJWT, updatePassword); // to update the
 userRouter
   .route("/profile")
   .patch(verifyJWT, upload.single("profilePic"), updateFile); // to update the profie image
+
+userRouter.route("/:userId").get(verifyJWT, getCurrentUser); // getting the current user
 
 export default userRouter; // exporting as default
