@@ -124,7 +124,6 @@ const retrieveTaskFunction = async (req, res) => {
 const updateTaskFunction = async (req, res) => {
   // retrieving the data to be updated
   const { title, description, priority, isCompleted, category } = req.body;
-  const imagePath = req.file.path;
   const taskId = req.params?.taskId; // the task id
   const userId = req.user?._id; // the user id
   const existingTask = await Task.findOne({ _id: taskId, owner: userId }); // the current task
@@ -170,11 +169,14 @@ const updateTaskFunction = async (req, res) => {
   // updating the image
 
   let newImage = oldImage;
-  if (imagePath !== undefined) {
-    // update the image only if a new image is sent
-    newImage = await uploadOnCloudinary(imagePath);
-    if (!newImage) {
-      throw new ApiError(500, "The image could not be uploaded!");
+  if (req.file !== undefined) {
+    const imagePath = req.file.path;
+    if (imagePath !== undefined) {
+      // update the image only if a new image is sent
+      newImage = await uploadOnCloudinary(imagePath);
+      if (!newImage) {
+        throw new ApiError(500, "The image could not be uploaded!");
+      }
     }
   }
 
@@ -191,7 +193,7 @@ const updateTaskFunction = async (req, res) => {
   const task = await Task.findByIdAndUpdate(
     taskId,
     {
-      $set: updateTask,
+      $set: updatedTask,
     },
     {
       new: true,

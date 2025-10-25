@@ -80,6 +80,8 @@ app.use((error, _req, res, _next) => {
     message: error.message || "Internal Server Error",
     error: process.env.NODE_ENV === "development" ? error : undefined, // Full error object for debugging (only in development)
   });
+
+  console.log(error);
 });
 
 export default app; // exporting the app
