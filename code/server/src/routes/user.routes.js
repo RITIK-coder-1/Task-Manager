@@ -39,7 +39,7 @@ userRouter.route("/login").post(loginUser); // login the user on the login path
 
 userRouter.route("/logout").post(verifyJWT, logoutUser); // log the user out on this path
 
-userRouter.route("/token/refresh").post(newAccessToken); // to issue a new access token end point
+userRouter.route("/token/refresh").post(verifyJWT, newAccessToken); // to issue a new access token end point
 
 userRouter.route("/details").patch(verifyJWT, updateAccount); // to update the user details
 

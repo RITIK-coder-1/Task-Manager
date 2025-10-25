@@ -246,7 +246,7 @@ const newAccessTokenFunction = async (req, res) => {
     }
 
     // double checking if the incoming refresh token matches the one stored in the database
-    if (decodedToken.uniqueToken !== user?.uniqueToken) {
+    if (decodedToken.uniqueToken !== user?.refreshTokenString) {
       throw new ApiError(403, "Refresh Token is expired or used");
     }
 
@@ -284,6 +284,7 @@ const newAccessTokenFunction = async (req, res) => {
           new ApiError(403, "Forbidden: Invalid or Expired JWT Signature.")
         );
     }
+
     // Final fallback for other unexpected errors
     console.error("Token Refresh Error:", error);
     return res

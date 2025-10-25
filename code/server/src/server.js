@@ -4,7 +4,7 @@
 // ----------------------------------------------
 
 import app from "./app.js"; // importing the express app
-import "dotenv/config"; // Importing the environment variables
+import "dotenv/config.js"; // Importing the environment variables
 import connectDB from "./config/db.js"; // The database connection function
 
 // ----------------------------------------------

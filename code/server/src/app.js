@@ -74,11 +74,16 @@ app.use((req, res, next) => {
 // Global error handling middleware
 app.use((error, _req, res, _next) => {
   // we're only using error and res here
+
+  console.log("RT: ", process.env.REFRESH_TOKEN_SECRET);
+  console.log("AT: ", process.env.ACCESS_TOKEN_SECRET);
+
   res.status(error.status || 500).json({
     success: false,
     message: error.message || "Internal Server Error",
     error: process.env.NODE_ENV === "development" ? error : undefined, // Full error object for debugging (only in development)
   });
+  console.log("error");
 });
 
 export default app; // exporting the app
