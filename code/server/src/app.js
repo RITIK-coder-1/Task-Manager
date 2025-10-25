@@ -57,6 +57,17 @@ app.use("/api/v1/users", userRouter);
 // Task routes
 app.use("/api/v1/users/:userId/tasks", taskRouter);
 
+// Test route for frontend (temporary)
+app.get("/api/v1/test", (req, res) => {
+  res.json([
+    {
+      name: "The name of the task",
+      description: "The details of the task",
+      createdBy: "Ritik",
+    },
+  ]);
+});
+
 // ----------------------------------------------
 // Error Handlers
 // ----------------------------------------------

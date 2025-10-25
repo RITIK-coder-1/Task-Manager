@@ -23,7 +23,7 @@ connectDB()
     // Start the server and listen on the defined port if the database connected properly
     // Logs a message to confirm successful startup
     app.listen(port, () => {
-      console.log(`Server is running at http://${hostname}:${port}`);
+      console.log(`Server is running at http://${hostname}:${port}/api/v1`);
     });
   })
   .catch((err) => {
