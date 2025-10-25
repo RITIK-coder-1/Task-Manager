@@ -59,9 +59,9 @@ app.use("/api/v1/users/:userId/tasks", taskRouter);
 
 // Test route for frontend (temporary)
 app.get("/api/v1/test", (req, res) => {
-  res.json([
+  res.status(200).json([
     {
-      name: "The name of the task",
+      name: "Task 1",
       description: "The details of the task",
       createdBy: "Ritik",
     },
