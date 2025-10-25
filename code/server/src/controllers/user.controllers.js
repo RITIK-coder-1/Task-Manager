@@ -384,12 +384,29 @@ const updatePasswordFunction = async (req, res) => {
   // getting the new and old passwords
   const { oldPassword, newPassword } = req.body;
 
+  if (!oldPassword.trim() || !newPassword.trim()) {
+    throw new ApiError(400, "Please enter both the password fields properly!");
+  }
+
   // getting the user and checking if the entered password is correct or not
   const user = await User.findById(req.user?._id);
   const isPasswordCorrect = await user.isPasswordCorrect(oldPassword);
 
   if (!isPasswordCorrect) {
     throw new ApiError(400, "Invalid Old Password");
+  }
+
+  // checking if the password is of at least 10 characters
+  if (newPassword.trim().length < 10) {
+    throw new ApiError(
+      400,
+      "The password should at least be of 10 characters!"
+    );
+  }
+
+  // checking if both the passwords are the same
+  if (newPassword.trim() === oldPassword.trim()) {
+    throw new ApiError(400, "The new and old passwords should be different!");
   }
 
   // Although the password is always hashed before being saved as per the function defined in the user model, a bug can potentially revoke that. So, it is safe to directly hash the password here
