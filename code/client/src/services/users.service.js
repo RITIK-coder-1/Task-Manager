@@ -35,9 +35,9 @@ The function to login a user
 ------------------------------------------------------------------------------ */
 const loginUser = async (userData) => {
   try {
-    const response = await userAxios.post("/login", userData); // the response object of axios
+    const response = await userAxios.post("/login", userData);
     console.log("User successfully logged in!", response);
-    return response.data; // the response sent by the backend
+    return response.data;
   } catch (error) {
     console.log(
       "Login Failed: ",
@@ -47,4 +47,22 @@ const loginUser = async (userData) => {
   }
 };
 
-export { registerUser, loginUser };
+/* ---------------------------------------------------------------------------
+The function to logout a user
+------------------------------------------------------------------------------ */
+
+const logout = async () => {
+  try {
+    const response = await userAxios.post("/logout");
+    console.log("The user has been successfully logged out: ", response);
+    return response.data;
+  } catch (error) {
+    console.error(
+      "There was a problem while logging the user out: ",
+      error.response?.message || error.message
+    );
+    throw error;
+  }
+};
+
+export { registerUser, loginUser, logout };
