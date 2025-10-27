@@ -41,14 +41,14 @@ userRouter.route("/logout").post(verifyJWT, logoutUser); // log the user out on 
 
 userRouter.route("/me").get(verifyJWT, getCurrentUser); // getting the current user
 
-userRouter.route("/:userId/token/refresh").post(verifyJWT, newAccessToken); // to issue a new access token end point
+userRouter.route("/me/token/refresh").post(verifyJWT, newAccessToken); // to issue a new access token end point
 
-userRouter.route("/:userId/details").patch(verifyJWT, updateAccount); // to update the user details
+userRouter.route("/me/details").patch(verifyJWT, updateAccount); // to update the user details
 
-userRouter.route("/:userId/password").patch(verifyJWT, updatePassword); // to update the password
+userRouter.route("/me/password").patch(verifyJWT, updatePassword); // to update the password
 
 userRouter
-  .route("/:userId/profile")
+  .route("/me/profile")
   .patch(verifyJWT, upload.single("profilePic"), updateFile); // to update the profie image
 
 export default userRouter; // exporting as default

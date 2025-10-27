@@ -36,7 +36,7 @@ The function to login a user
 const loginUser = async (userData) => {
   try {
     const response = await userAxios.post("/login", userData);
-    console.log("User successfully logged in!", response);
+    console.log("User successfully logged in!", response.data);
     return response.data;
   } catch (error) {
     console.log(
@@ -54,7 +54,7 @@ The function to logout a user
 const logout = async () => {
   try {
     const response = await userAxios.post("/logout");
-    console.log("The user has been successfully logged out: ", response);
+    console.log("The user has been successfully logged out: ", response.data);
     return response.data;
   } catch (error) {
     console.error(
@@ -72,7 +72,7 @@ The function to fetch a user's details
 const getUser = async () => {
   try {
     const response = await userAxios.get("/me");
-    console.log("The user has been successfully fetched! :", response);
+    console.log("The user has been successfully fetched! :", response.data);
     return response.data;
   } catch (error) {
     console.error(
@@ -83,4 +83,46 @@ const getUser = async () => {
   }
 };
 
-export { registerUser, loginUser, logout, getUser };
+/* ---------------------------------------------------------------------------
+The function to update a user's details
+------------------------------------------------------------------------------ */
+
+const updateUser = async (updatedData) => {
+  try {
+    const response = await userAxios.patch("/me/details", updatedData);
+    console.log(
+      "The details of the user has been successfully updated! :",
+      response.data
+    );
+    return response.data;
+  } catch (error) {
+    console.error(
+      "There was an error while updating the user's details : ",
+      error.response?.data?.message || error.message
+    );
+    throw error;
+  }
+};
+
+/* ---------------------------------------------------------------------------
+The function to update a user's password
+------------------------------------------------------------------------------ */
+
+const updatePassword = async (updatedData) => {
+  try {
+    const response = await userAxios.patch("/me/password", updatedData);
+    console.log(
+      "The password of the user has been successfully updated! :",
+      response.data
+    );
+    return response.data;
+  } catch (error) {
+    console.error(
+      "There was an error while updating the user's password : ",
+      error.response?.data?.message || error.message
+    );
+    throw error;
+  }
+};
+
+export { registerUser, loginUser, logout, getUser, updateUser, updatePassword };
