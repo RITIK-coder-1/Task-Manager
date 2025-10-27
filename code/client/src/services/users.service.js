@@ -18,7 +18,16 @@ The function to register a user
 ------------------------------------------------------------------------------ */
 const registerUser = async (userData) => {
   try {
-    const response = await userAxios.post("/register", userData); // the response object of axios
+    const response = await userAxios.post(
+      "/register",
+      userData, // The file data payload
+      {
+        headers: {
+          // It forces Axios to let the browser set the correct 'multipart/form-data' header (Because a user can upload the profile pic while registering).
+          "Content-Type": "multipart/form-data",
+        },
+      }
+    ); // the response object of axios
     console.log("User successfully registered!", response);
     return response.data; // the response sent by the backend
   } catch (error) {
