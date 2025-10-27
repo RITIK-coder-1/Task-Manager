@@ -2,14 +2,4 @@
 App.css
 This file contains the styles of the application 
 ------------------------------------------------------------------------------ */
-
-/* Tailwind Specific Import */
-
 @import "tailwindcss";
-
-/* Base styles for the application */
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: content-box;
-}

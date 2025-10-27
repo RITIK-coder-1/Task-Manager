@@ -3,10 +3,11 @@ App.jsx
 This is the root application that hosts all the app pages 
 ------------------------------------------------------------------------------ */
 
+import { useEffect, useState } from "react";
 import "./styles/App.css";
 
 function App() {
-  return <h1 className="text-4xl">Hey!</h1>;
+  return;
 }
 
 export default App;
