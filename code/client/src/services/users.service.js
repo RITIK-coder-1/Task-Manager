@@ -27,8 +27,8 @@ const registerUser = async (userData) => {
           "Content-Type": "multipart/form-data",
         },
       }
-    ); // the response object of axios
-    console.log("User successfully registered!", response);
+    );
+    console.log("User successfully registered!", response.data);
     return response.data; // the response sent by the backend
   } catch (error) {
     console.log(
