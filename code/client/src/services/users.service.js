@@ -125,4 +125,45 @@ const updatePassword = async (updatedData) => {
   }
 };
 
-export { registerUser, loginUser, logout, getUser, updateUser, updatePassword };
+/* ---------------------------------------------------------------------------
+The function to update a user's profile pic
+------------------------------------------------------------------------------ */
+
+const updatePic = async (profileFormData) => {
+  try {
+    const response = await userAxios.patch(
+      "/me/profile",
+      profileFormData, // The file data payload
+      {
+        headers: {
+          // It forces Axios to let the browser set the correct 'multipart/form-data' header.
+          "Content-Type": "multipart/form-data",
+        },
+      }
+    );
+
+    console.log(
+      "The profile pic of the user has been successfully updated! :",
+      response.data
+    );
+    return response.data;
+  } catch (error) {
+    console.error(
+      "There was an error while updating the user's profile : ",
+      error.response?.data?.message || error.message,
+      "Status:",
+      error.response?.status
+    );
+    throw error;
+  }
+};
+
+export {
+  registerUser,
+  loginUser,
+  logout,
+  getUser,
+  updateUser,
+  updatePassword,
+  updatePic,
+};
