@@ -59,10 +59,28 @@ const logout = async () => {
   } catch (error) {
     console.error(
       "There was a problem while logging the user out: ",
-      error.response?.message || error.message
+      error.response?.data?.message || error.message
     );
     throw error;
   }
 };
 
-export { registerUser, loginUser, logout };
+/* ---------------------------------------------------------------------------
+The function to fetch a user's details
+------------------------------------------------------------------------------ */
+
+const getUser = async () => {
+  try {
+    const response = await userAxios.get("/me");
+    console.log("The user has been successfully fetched! :", response);
+    return response.data;
+  } catch (error) {
+    console.error(
+      "There was an error while fetching the user's details : ",
+      error.response?.data?.message || error.message
+    );
+    throw error;
+  }
+};
+
+export { registerUser, loginUser, logout, getUser };
