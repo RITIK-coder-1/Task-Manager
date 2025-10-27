@@ -16,12 +16,9 @@ const userAxios = axios.create({
 /* ---------------------------------------------------------------------------
 The function to register a user
 ------------------------------------------------------------------------------ */
-
-const registerEndpoint = "/register";
-
 const registerUser = async (userData) => {
   try {
-    const response = await userAxios.post(registerEndpoint, userData);
+    const response = await userAxios.post("/register", userData);
     console.log("User successfully registered!", response);
     return response;
   } catch (error) {
