@@ -310,7 +310,7 @@ const getUserFunction = async (req, res) => {
 
   return res
     .status(200)
-    .json(new ApiResponse(200, req.user, "Current User Fetched Successfully!"));
+    .json(new ApiResponse(200, user, "Current User Fetched Successfully!"));
 };
 
 // ----------------------------------------------

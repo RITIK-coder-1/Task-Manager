@@ -60,7 +60,7 @@ const loginUser = async (userData) => {
 The function to logout a user
 ------------------------------------------------------------------------------ */
 
-const logout = async () => {
+const logoutUser = async () => {
   try {
     const response = await userAxios.post("/logout");
     console.log("The user has been successfully logged out: ", response.data);
@@ -170,7 +170,7 @@ const updatePic = async (profileFormData) => {
 export {
   registerUser,
   loginUser,
-  logout,
+  logoutUser,
   getUser,
   updateUser,
   updatePassword,

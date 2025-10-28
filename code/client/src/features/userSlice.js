@@ -7,7 +7,7 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import {
   registerUser,
   loginUser,
-  logout,
+  logoutUser,
   getUser,
   updateUser,
   updatePassword,
@@ -45,6 +45,35 @@ const login = createAsyncThunk(
     }
   }
 );
+
+/* ---------------------------------------------------------------------------
+The function to logout a user
+------------------------------------------------------------------------------ */
+
+const logout = createAsyncThunk(
+  "users/logout",
+  async (_, { rejectWithValue }) => {
+    try {
+      const response = await logoutUser();
+      return response; // the response sent by the backend
+    } catch (error) {
+      return rejectWithValue(error.response?.data?.message || error.message);
+    }
+  }
+);
+
+/* ---------------------------------------------------------------------------
+The function to fetch a user
+------------------------------------------------------------------------------ */
+
+const get = createAsyncThunk("users/get", async (_, { rejectWithValue }) => {
+  try {
+    const response = await getUser();
+    return response; // the response sent by the backend
+  } catch (error) {
+    return rejectWithValue(error.response?.data?.message || error.message);
+  }
+});
 
 /* ---------------------------------------------------------------------------
 The Slice
@@ -107,9 +136,53 @@ const userSlice = createSlice({
         (state.error = action.payload),
         (state.data = null); // clear data on failure
     });
+
+    /* ---------------------------------------------------------------------------
+       All the cases for logging out a user
+    ------------------------------------------------------------------------------ */
+
+    // the pending case
+    builder.addCase(logout.pending, (state) => {
+      (state.status = "pending"), (state.error = null); // clear previous errors
+    });
+
+    // the success case
+    builder.addCase(logout.fulfilled, (state) => {
+      (state.status = "succeeded"), (state.data = null), (state.token = null);
+      localStorage.removeItem("accessToken"); // removing the access token for credentials
+    });
+
+    // the failure case
+    builder.addCase(logout.rejected, (state, action) => {
+      (state.status = "failed"),
+        (state.error = action.payload),
+        (state.data = null); // clear data on failure
+      localStorage.removeItem("accessToken"); // if the server fails to log out, we need to clean the token locally
+    });
+
+    /* ---------------------------------------------------------------------------
+       All the cases for getting a user
+    ------------------------------------------------------------------------------ */
+
+    // the pending case
+    builder.addCase(get.pending, (state) => {
+      (state.status = "pending"), (state.error = null); // clear previous errors
+    });
+
+    // the success case
+    builder.addCase(get.fulfilled, (state, action) => {
+      (state.status = "succeeded"), (state.data = action.payload);
+    });
+
+    // the failure case
+    builder.addCase(get.rejected, (state, action) => {
+      (state.status = "failed"),
+        (state.error = action.payload),
+        (state.data = null); // clear data on failure
+    });
   },
 });
 
-export { register, login };
+export { register, login, logout, get };
 
 export default userSlice.reducer;
