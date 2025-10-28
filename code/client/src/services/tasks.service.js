@@ -6,7 +6,7 @@ This script handles all the API calls using axios for task related queries
 import axios from "axios";
 
 const taskAxios = axios.create({
-  baseURL: "http://0.0.0.0:3000/api/v1/tasks",
+  baseURL: "http://0.0.0.0:3000/api/v1/users/tasks",
   timeout: 5000,
   headers: {
     "Content-Type": "application/json",
@@ -25,7 +25,7 @@ const createTask = async (formData) => {
     console.log("Task successfully created!: ", response.data);
     return response.data; // the response sent by the backend
   } catch (error) {
-    console.log(
+    console.error(
       "There was an error while creating the task: ",
       error.response?.data?.message || error.message
     );
@@ -33,4 +33,25 @@ const createTask = async (formData) => {
   }
 };
 
-export { createTask };
+/* ---------------------------------------------------------------------------
+The function to create a task
+------------------------------------------------------------------------------ */
+
+const getTask = async (taskId) => {
+  if (!taskId) {
+    throw new Error("The task ID is required to fetch the task!");
+  }
+  try {
+    const response = await taskAxios.get(`/:${taskId}`);
+    console.log("Task successfully retrieved!: ", response.data);
+    return response.data;
+  } catch (error) {
+    console.error(
+      "There was a problem while retrieving the task: ",
+      error.response?.data?.message || error.message
+    );
+    throw error;
+  }
+};
+
+export { createTask, getTask };
