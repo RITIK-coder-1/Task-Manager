@@ -27,6 +27,23 @@ const create = createAsyncThunk(
   }
 );
 
+/* ---------------------------------------------------------------------------
+Function to update a task
+------------------------------------------------------------------------------ */
+
+const update = createAsyncThunk(
+  "tasks/update",
+  async (taskData, { rejectWithValue }) => {
+    try {
+      const { id: taskId, ...formData } = taskData;
+      const response = await updateTask(taskId, formData);
+      return response; // the data sent by the backend
+    } catch (error) {
+      return rejectWithValue(error.response?.data?.message || error.message);
+    }
+  }
+);
+
 const taskSlice = createSlice({
   name: "tasks",
   initialState: {
@@ -56,7 +73,33 @@ const taskSlice = createSlice({
       state.status = "failed";
       state.error = action.payload;
     });
+
+    /* ---------------------------------------------------------------------------
+      All the cases for updating a task
+    ------------------------------------------------------------------------------ */
+
+    // the pending case
+    builder.addCase(update.pending, (state) => {
+      state.status = "pending";
+      state.error = null; // clear previous errors
+    });
+
+    // the success case
+    builder.addCase(update.fulfilled, (state, action) => {
+      state.status = "succeeded";
+      // override the task
+
+      // -- TO BE DONE
+    });
+
+    // the failure case
+    builder.addCase(update.rejected, (state, action) => {
+      state.status = "failed";
+      state.error = action.payload;
+    });
   },
 });
+
+export { create, update };
 
 export default taskSlice.reducer;
