@@ -25,7 +25,7 @@ const register = createAsyncThunk(
       const response = await registerUser(userData);
       return response; // the response sent by the backend
     } catch (error) {
-      return rejectWithValue(error.message);
+      return rejectWithValue(error.response?.data?.message || error.message);
     }
   }
 );
@@ -57,12 +57,14 @@ const userSlice = createSlice({
     });
 
     // the failure case
-    builder.addCase(register.rejected, (state) => {
+    builder.addCase(register.rejected, (state, action) => {
       (state.status = "failed"),
         (state.error = action.payload || "An unknown error occured"),
-        (state.data = []); // clear data on failure
+        (state.data = null); // clear data on failure
     });
   },
 });
+
+export { register };
 
 export default userSlice.reducer;

@@ -98,6 +98,8 @@ const registerUserFunction = async (req, res) => {
     throw new ApiError(500, "There was a problem while registering the user!");
   }
 
+  const { accessToken } = await generateTokens(user._id);
+
   // The user data is going to be sent in to JSON response without the password and the refresh token string
   // Convert Mongoose document to a plain JS object for safer manipulation
   const createdUser = user.toObject();
@@ -110,7 +112,7 @@ const registerUserFunction = async (req, res) => {
     .json(
       new ApiResponse(
         201,
-        createdUser,
+        { user: createdUser, accessToken: accessToken },
         "The user has been registered successfully!"
       )
     );
