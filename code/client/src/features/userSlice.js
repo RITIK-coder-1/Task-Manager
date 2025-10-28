@@ -92,6 +92,38 @@ const userUpdate = createAsyncThunk(
 );
 
 /* ---------------------------------------------------------------------------
+The function to update the password
+------------------------------------------------------------------------------ */
+
+const passwordUpdate = createAsyncThunk(
+  "users/passwordUpdate",
+  async (updatedData, { rejectWithValue }) => {
+    try {
+      const response = await updatePassword(updatedData);
+      return response; // the response sent by the backend
+    } catch (error) {
+      return rejectWithValue(error.response?.data?.message || error.message);
+    }
+  }
+);
+
+/* ---------------------------------------------------------------------------
+The function to update the profile pic
+------------------------------------------------------------------------------ */
+
+const profileUpdate = createAsyncThunk(
+  "users/profileUpdate",
+  async (profileFormData, { rejectWithValue }) => {
+    try {
+      const response = await updatePassword(profileFormData);
+      return response; // the response sent by the backend
+    } catch (error) {
+      return rejectWithValue(error.response?.data?.message || error.message);
+    }
+  }
+);
+
+/* ---------------------------------------------------------------------------
 The Slice
 ------------------------------------------------------------------------------ */
 
@@ -217,9 +249,57 @@ const userSlice = createSlice({
         (state.error = action.payload),
         (state.data = null); // clear data on failure
     });
+
+    /* ---------------------------------------------------------------------------
+       All the cases for updating the password
+    ------------------------------------------------------------------------------ */
+
+    // the pending case
+    builder.addCase(passwordUpdate.pending, (state) => {
+      (state.status = "pending"), (state.error = null); // clear previous errors
+    });
+
+    // the success case
+    builder.addCase(passwordUpdate.fulfilled, (state, action) => {
+      (state.status = "succeeded"), (state.data = action.payload.newPassword);
+    });
+
+    // the failure case
+    builder.addCase(passwordUpdate.rejected, (state, action) => {
+      (state.status = "failed"),
+        (state.error = action.payload),
+        (state.data = null); // clear data on failure
+    });
+
+    /* ---------------------------------------------------------------------------
+       All the cases for updating the profile pic
+    ------------------------------------------------------------------------------ */
+
+    // the pending case
+    builder.addCase(profileUpdate.pending, (state) => {
+      (state.status = "pending"), (state.error = null); // clear previous errors
+    });
+
+    // the success case
+    builder.addCase(profileUpdate.fulfilled, (state, action) => {
+      state.status = "succeeded";
+    });
+
+    // the failure case
+    builder.addCase(profileUpdate.rejected, (state, action) => {
+      (state.status = "failed"), (state.error = action.payload);
+    });
   },
 });
 
-export { register, login, logout, get, userUpdate };
+export {
+  register,
+  login,
+  logout,
+  get,
+  userUpdate,
+  passwordUpdate,
+  profileUpdate,
+};
 
 export default userSlice.reducer;

@@ -440,7 +440,7 @@ const updatePasswordFunction = async (req, res) => {
     .json(
       new ApiResponse(
         200,
-        { passwordResetRequired: true },
+        { passwordResetRequired: true, newPassword },
         "Password Changed Successfully!"
       )
     );
