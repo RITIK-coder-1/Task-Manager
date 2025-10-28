@@ -76,6 +76,22 @@ const get = createAsyncThunk("users/get", async (_, { rejectWithValue }) => {
 });
 
 /* ---------------------------------------------------------------------------
+The function to update a user
+------------------------------------------------------------------------------ */
+
+const userUpdate = createAsyncThunk(
+  "users/userUpdate",
+  async (updatedData, { rejectWithValue }) => {
+    try {
+      const response = await getUser(updatedData);
+      return response; // the response sent by the backend
+    } catch (error) {
+      return rejectWithValue(error.response?.data?.message || error.message);
+    }
+  }
+);
+
+/* ---------------------------------------------------------------------------
 The Slice
 ------------------------------------------------------------------------------ */
 
@@ -180,9 +196,30 @@ const userSlice = createSlice({
         (state.error = action.payload),
         (state.data = null); // clear data on failure
     });
+
+    /* ---------------------------------------------------------------------------
+       All the cases for updating a user
+    ------------------------------------------------------------------------------ */
+
+    // the pending case
+    builder.addCase(userUpdate.pending, (state) => {
+      (state.status = "pending"), (state.error = null); // clear previous errors
+    });
+
+    // the success case
+    builder.addCase(userUpdate.fulfilled, (state, action) => {
+      (state.status = "succeeded"), (state.data = action.payload);
+    });
+
+    // the failure case
+    builder.addCase(userUpdate.rejected, (state, action) => {
+      (state.status = "failed"),
+        (state.error = action.payload),
+        (state.data = null); // clear data on failure
+    });
   },
 });
 
-export { register, login, logout, get };
+export { register, login, logout, get, userUpdate };
 
 export default userSlice.reducer;
