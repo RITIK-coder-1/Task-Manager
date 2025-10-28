@@ -1,5 +1,5 @@
 /* ---------------------------------------------------------------------------
-tasks.service.js
+taskService.js
 This script handles all the API calls using axios for task related queries
 ------------------------------------------------------------------------------ */
 

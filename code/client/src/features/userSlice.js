@@ -1,5 +1,5 @@
 /* ---------------------------------------------------------------------------
-user.features.js
+userSlice.js
 This is the slice for all the user related global state management
 ------------------------------------------------------------------------------ */
 

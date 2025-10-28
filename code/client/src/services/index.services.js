@@ -4,19 +4,19 @@ This script exports all the user and task related API calls from a single place
 ------------------------------------------------------------------------------ */
 
 // user API calls
-import { registerUser } from "./users.services";
-import { loginUser } from "./users.services";
-import { logoutUser } from "./users.services";
-import { getUser } from "./users.services";
-import { updateUser } from "./users.services";
-import { updatePassword } from "./users.services";
-import { updatePic } from "./users.services";
+import { registerUser } from "./userService";
+import { loginUser } from "./userService";
+import { logoutUser } from "./userService";
+import { getUser } from "./userService";
+import { updateUser } from "./userService";
+import { updatePassword } from "./userService";
+import { updatePic } from "./userService";
 
 // task API calls
-import { createTask } from "./tasks.services";
-import { getTask } from "./tasks.services";
-import { updateTask } from "./tasks.services";
-import { deleteTask } from "./tasks.services";
+import { createTask } from "./taskService";
+import { getTask } from "./taskService";
+import { updateTask } from "./taskService";
+import { deleteTask } from "./taskService";
 
 export {
   registerUser,

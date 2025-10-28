@@ -1,5 +1,5 @@
 /* ---------------------------------------------------------------------------
-task.features.js
+taskSlice.js
 This is the slice for all the task related global state management
 ------------------------------------------------------------------------------ */
 
@@ -60,12 +60,29 @@ const remove = createAsyncThunk(
   }
 );
 
+/* ---------------------------------------------------------------------------
+Function to get a task
+------------------------------------------------------------------------------ */
+
+const get = createAsyncThunk(
+  "tasks/get",
+  async (taskId, { rejectWithValue }) => {
+    try {
+      const response = await getTask(taskId);
+      return response; // the data sent by the backend
+    } catch (error) {
+      return rejectWithValue(error.response?.data?.message || error.message);
+    }
+  }
+);
+
 const taskSlice = createSlice({
   name: "tasks",
   initialState: {
     tasks: [], // holding the data
     status: "idle", // "idle", "pending", "succeeded", "rejected"
     error: null, // the error message
+    tempTask: null, // the current task that the user wishes to view
   },
   extraReducers: (builder) => {
     /* ---------------------------------------------------------------------------
@@ -139,6 +156,28 @@ const taskSlice = createSlice({
 
     // the failure case
     builder.addCase(remove.rejected, (state, action) => {
+      state.status = "failed";
+      state.error = action.payload;
+    });
+
+    /* ---------------------------------------------------------------------------
+      All the cases for retrieving a task
+    ------------------------------------------------------------------------------ */
+
+    // the pending case
+    builder.addCase(get.pending, (state) => {
+      state.status = "pending";
+      state.error = null; // clear previous errors
+    });
+
+    // the success case
+    builder.addCase(get.fulfilled, (state, action) => {
+      state.status = "succeeded";
+      state.tempTask = action.payload; // the current task that the user wishes to view
+    });
+
+    // the failure case
+    builder.addCase(get.rejected, (state, action) => {
       state.status = "failed";
       state.error = action.payload;
     });
