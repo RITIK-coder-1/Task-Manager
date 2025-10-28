@@ -72,4 +72,22 @@ const updateTask = async (taskId, formData) => {
   }
 };
 
-export { createTask, getTask, updateTask };
+/* ---------------------------------------------------------------------------
+The function to delete a task
+------------------------------------------------------------------------------ */
+
+const deleteTask = async (taskId) => {
+  try {
+    const response = await taskAxios.delete(`/${taskId}`);
+    console.log("Task successfully deleted!: ", response.data);
+    return response.data;
+  } catch (error) {
+    console.error(
+      "There was a problem while deleting the task: ",
+      error.response?.data?.message || error.message
+    );
+    throw error;
+  }
+};
+
+export { createTask, getTask, updateTask, deleteTask };

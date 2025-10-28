@@ -11,11 +11,12 @@ import { getUser } from "./users.service";
 import { updateUser } from "./users.service";
 import { updatePassword } from "./users.service";
 import { updatePic } from "./users.service";
-import { getTask } from "./tasks.service";
-import { updateTask } from "./tasks.service";
 
 // task API calls
 import { createTask } from "./tasks.service";
+import { getTask } from "./tasks.service";
+import { updateTask } from "./tasks.service";
+import { deleteTask } from "./tasks.service";
 
 export {
   registerUser,
@@ -28,4 +29,5 @@ export {
   createTask,
   getTask,
   updateTask,
+  deleteTask,
 };
