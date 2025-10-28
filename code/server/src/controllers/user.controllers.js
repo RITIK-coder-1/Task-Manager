@@ -440,7 +440,7 @@ const updatePasswordFunction = async (req, res) => {
     .json(
       new ApiResponse(
         200,
-        { passwordResetRequired: true, newPassword },
+        { passwordResetRequired: true },
         "Password Changed Successfully!"
       )
     );
@@ -495,7 +495,9 @@ const updateFileFunction = async (req, res) => {
   }
 
   // sending a JSON API response
-  res.send(200).json(new ApiResponse(200, {}, "The file has been updated!"));
+  res
+    .send(200)
+    .json(new ApiResponse(200, foundUser, "The file has been updated!"));
 };
 
 // ----------------------------------------------
