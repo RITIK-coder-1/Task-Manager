@@ -1,8 +1,9 @@
 import { configureStore } from "@reduxjs/toolkit";
-import testReducer from "../features/testSlice.js";
+import { taskReducer, userReducer } from "../features/index.features.js";
 
 export const store = configureStore({
   reducer: {
-    test: testReducer,
+    task: taskReducer,
+    user: userReducer,
   },
 });

@@ -1,10 +1,8 @@
 /* ---------------------------------------------------------------------------
-authSlice.jsx
-This is the redux slice for user registration
+user.features.js
+This is the slice for all the user related global state management
 ------------------------------------------------------------------------------ */
 
 import { createSlice } from "@reduxjs/toolkit";
 
-const authSlice = createSlice({});
-
-export default authSlice.reducer;
+export default userSlice.reducer;
