@@ -42,7 +42,7 @@ const getTask = async (taskId) => {
     throw new Error("The task ID is required to fetch the task!");
   }
   try {
-    const response = await taskAxios.get(`/:${taskId}`);
+    const response = await taskAxios.get(`/${taskId}`);
     console.log("Task successfully retrieved!: ", response.data);
     return response.data;
   } catch (error) {
@@ -54,4 +54,22 @@ const getTask = async (taskId) => {
   }
 };
 
-export { createTask, getTask };
+/* ---------------------------------------------------------------------------
+The function to update a task
+------------------------------------------------------------------------------ */
+
+const updateTask = async (taskId, formData) => {
+  try {
+    const response = await taskAxios.patch(`/${taskId}`, formData);
+    console.log("Task successfully updated!: ", response.data);
+    return response.data;
+  } catch (error) {
+    console.error(
+      "There was a problem while updating the task: ",
+      error.response?.data?.message || error.message
+    );
+    throw error;
+  }
+};
+
+export { createTask, getTask, updateTask };
