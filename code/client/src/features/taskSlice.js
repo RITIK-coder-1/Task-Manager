@@ -44,6 +44,22 @@ const update = createAsyncThunk(
   }
 );
 
+/* ---------------------------------------------------------------------------
+Function to remove a task
+------------------------------------------------------------------------------ */
+
+const remove = createAsyncThunk(
+  "tasks/remove",
+  async (taskId, { rejectWithValue }) => {
+    try {
+      const response = await deleteTask(taskId);
+      return response; // the data sent by the backend
+    } catch (error) {
+      return rejectWithValue(error.response?.data?.message || error.message);
+    }
+  }
+);
+
 const taskSlice = createSlice({
   name: "tasks",
   initialState: {
@@ -103,9 +119,32 @@ const taskSlice = createSlice({
       state.status = "failed";
       state.error = action.payload;
     });
+
+    /* ---------------------------------------------------------------------------
+      All the cases for removing a task
+    ------------------------------------------------------------------------------ */
+
+    // the pending case
+    builder.addCase(remove.pending, (state) => {
+      state.status = "pending";
+      state.error = null; // clear previous errors
+    });
+
+    // the success case
+    builder.addCase(remove.fulfilled, (state, action) => {
+      state.status = "succeeded";
+      const index = state.tasks.findIndex((task) => task.id === action.payload);
+      state.tasks.splice(index, 1);
+    });
+
+    // the failure case
+    builder.addCase(remove.rejected, (state, action) => {
+      state.status = "failed";
+      state.error = action.payload;
+    });
   },
 });
 
-export { create, update };
+export { create, update, remove };
 
 export default taskSlice.reducer;
