@@ -21,8 +21,11 @@ The function to register a user
 const register = createAsyncThunk(
   "users/register",
   async (userData, { rejectWithValue }) => {
+    console.log("register");
+
     try {
       const response = await registerUser(userData);
+
       return response; // the response sent by the backend
     } catch (error) {
       return rejectWithValue(error.response?.data?.message || error.message);
