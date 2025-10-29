@@ -13,10 +13,27 @@ const app = express(); // the express app
 const jsonlimit = "16kb"; // setting the limit of accepting data
 
 // setting the cors origin
+
+// Defining all valid origins
+const allowedOrigins = [
+  "http://localhost:5173", // My React App's current development server
+  "http://localhost:3000", // The origin the server was previously allowing
+  "http://127.0.0.1:5173", // A good practice for comprehensive localhost coverage
+];
+
 app.use(
   cors({
-    origin: process.env.CORS_ORIGIN || "http://localhost:3000",
-    // only this particular origin can access the server
+    origin: function (origin, callback) {
+      // It allows requests with no origin (like mobile apps or postman)
+      if (!origin) return callback(null, true);
+
+      if (allowedOrigins.indexOf(origin) === -1) {
+        const msg =
+          "The CORS policy for this site does not allow access from the specified Origin.";
+        return callback(new Error(msg), false);
+      }
+      return callback(null, true);
+    },
     credentials: true,
   })
 );

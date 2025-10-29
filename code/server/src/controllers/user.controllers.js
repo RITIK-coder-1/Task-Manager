@@ -44,7 +44,8 @@ const generateTokens = async (userId) => {
 
 const registerUserFunction = async (req, res) => {
   // taking all the input fields from the client request
-  const { fullName, username, password, email } = req.body;
+  const { fullNameString, username, password, email } = req.body;
+  const fullName = JSON.parse(fullNameString); // parsing the full name string into an object
 
   if (fullName === undefined) {
     throw new ApiError(400, "You should input your fullname!!"); // we have to explicitly check the fullname because it is an object

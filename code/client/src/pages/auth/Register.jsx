@@ -14,18 +14,17 @@ function Register() {
   const handleOnSubmit = (e) => {
     e.preventDefault(); // prevent page re-load
     const payload = new FormData();
-    payload.append("firstName", firstName);
-    payload.append("lastName", lastName);
+    const fullNameString = JSON.stringify({
+      firstName: firstName,
+      lastName: lastName,
+    });
+    payload.append("fullNameString", fullNameString);
     payload.append("email", email);
     payload.append("password", password);
     payload.append("username", username);
 
     dispatch(register(payload));
   };
-
-  useEffect(() => {
-    console.log(user);
-  }, [user]);
 
   return (
     <AuthCard onSubmit={handleOnSubmit}>
@@ -51,7 +50,7 @@ function Register() {
       <div className="flex gap-2">
         <label>Enter a username: </label>
         <Input
-          placeholder={"More than 6 characters"}
+          placeholder={"Minimum 3 characters"}
           name={"username"}
           onChange={(e) => {
             const value = e.target.value;
