@@ -105,6 +105,9 @@ const taskSlice = createSlice({
     builder.addCase(create.rejected, (state, action) => {
       state.status = "failed";
       state.error = action.payload;
+      if (action.payload === "timeout of 5000ms exceeded") {
+        state.error = `${action.payload}. Please try again!`; // for UX
+      }
     });
 
     /* ---------------------------------------------------------------------------
@@ -135,6 +138,9 @@ const taskSlice = createSlice({
     builder.addCase(update.rejected, (state, action) => {
       state.status = "failed";
       state.error = action.payload;
+      if (action.payload === "timeout of 5000ms exceeded") {
+        state.error = `${action.payload}. Please try again!`; // for UX
+      }
     });
 
     /* ---------------------------------------------------------------------------
@@ -158,6 +164,9 @@ const taskSlice = createSlice({
     builder.addCase(remove.rejected, (state, action) => {
       state.status = "failed";
       state.error = action.payload;
+      if (action.payload === "timeout of 5000ms exceeded") {
+        state.error = `${action.payload}. Please try again!`; // for UX
+      }
     });
 
     /* ---------------------------------------------------------------------------
@@ -180,6 +189,9 @@ const taskSlice = createSlice({
     builder.addCase(get.rejected, (state, action) => {
       state.status = "failed";
       state.error = action.payload;
+      if (action.payload === "timeout of 5000ms exceeded") {
+        state.error = `${action.payload}. Please try again!`; // for UX
+      }
     });
   },
 });

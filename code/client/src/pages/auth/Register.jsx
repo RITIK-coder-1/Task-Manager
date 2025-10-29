@@ -2,8 +2,12 @@ import React, { useEffect, useState } from "react";
 import { Input, AuthCard, Button } from "../../components/index.components.js";
 import { useDispatch, useSelector } from "react-redux";
 import { register } from "../../features/userSlice.js";
+
+// CURRENTLY IN DEVELOPMENT
+
 function Register() {
-  const user = useSelector((state) => state.users.user);
+  const status = useSelector((state) => state.users.status);
+  const error = useSelector((state) => state.users.error);
   const dispatch = useDispatch();
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
@@ -24,6 +28,18 @@ function Register() {
     payload.append("username", username);
 
     dispatch(register(payload));
+  };
+
+  const renderStatusMessage = () => {
+    if (status === "pending") {
+      return <span>Checking...</span>;
+    } else if (status === "succeeded") {
+      return <span>User is successfully registered!</span>;
+    } else if (status === "failed") {
+      return <span>{error}</span>;
+    }
+    // Optional: Handle the default/idle state
+    return null;
   };
 
   return (
@@ -93,6 +109,7 @@ function Register() {
         ></input>
       </div> */}
       <Button content={"Register"} type={"submit"} />
+      {renderStatusMessage()}
     </AuthCard>
   );
 }

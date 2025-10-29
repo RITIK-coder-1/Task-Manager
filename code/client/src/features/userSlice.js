@@ -21,8 +21,6 @@ The function to register a user
 const register = createAsyncThunk(
   "users/register",
   async (userData, { rejectWithValue }) => {
-    console.log("register");
-
     try {
       const response = await registerUser(userData);
 
@@ -163,6 +161,9 @@ const userSlice = createSlice({
     builder.addCase(register.rejected, (state, action) => {
       state.status = "failed";
       state.error = action.payload || "An unknown error occured";
+      if (action.payload === "timeout of 5000ms exceeded") {
+        state.error = `${action.payload}. Please try again!`; // for UX
+      }
       state.user = null; // clear data on failure
       state.token = null;
     });
@@ -191,6 +192,9 @@ const userSlice = createSlice({
     builder.addCase(login.rejected, (state, action) => {
       state.status = "failed";
       state.error = action.payload;
+      if (action.payload === "timeout of 5000ms exceeded") {
+        state.error = `${action.payload}. Please try again!`; // for UX
+      }
       state.user = null; // clear data on failure
     });
 
@@ -216,6 +220,9 @@ const userSlice = createSlice({
     builder.addCase(logout.rejected, (state, action) => {
       state.status = "failed";
       state.error = action.payload;
+      if (action.payload === "timeout of 5000ms exceeded") {
+        state.error = `${action.payload}. Please try again!`; // for UX
+      }
       state.user = null; // clear data on failure
       localStorage.removeItem("accessToken"); // if the server fails to log out, we need to clean the token locally
     });
@@ -240,6 +247,9 @@ const userSlice = createSlice({
     builder.addCase(get.rejected, (state, action) => {
       state.status = "failed";
       state.error = action.payload;
+      if (action.payload === "timeout of 5000ms exceeded") {
+        state.error = `${action.payload}. Please try again!`; // for UX
+      }
       state.user = null; // clear data on failure
     });
 
@@ -263,6 +273,9 @@ const userSlice = createSlice({
     builder.addCase(userUpdate.rejected, (state, action) => {
       state.status = "failed";
       state.error = action.payload;
+      if (action.payload === "timeout of 5000ms exceeded") {
+        state.error = `${action.payload}. Please try again!`; // for UX
+      }
       state.user = null; // clear data on failure
     });
 
@@ -285,6 +298,9 @@ const userSlice = createSlice({
     builder.addCase(passwordUpdate.rejected, (state, action) => {
       state.status = "failed";
       state.error = action.payload;
+      if (action.payload === "timeout of 5000ms exceeded") {
+        state.error = `${action.payload}. Please try again!`; // for UX
+      }
       state.user = null; // clear data on failure
     });
 
@@ -308,6 +324,9 @@ const userSlice = createSlice({
     builder.addCase(profileUpdate.rejected, (state, action) => {
       state.status = "failed";
       state.error = action.payload;
+      if (action.payload === "timeout of 5000ms exceeded") {
+        state.error = `${action.payload}. Please try again!`; // for UX
+      }
     });
   },
 });

@@ -61,11 +61,11 @@ const registerUserFunction = async (req, res) => {
   }
 
   // checking if the user already exists
-  const isUserExists = await User.findOne({
-    $or: [{ username }, { email }], // if the username or the email already exists, return true
+  const ifUserExists = await User.findOne({
+    $and: [{ username }, { email }], // if the username or the email already exists, return true
   });
 
-  if (isUserExists) {
+  if (ifUserExists) {
     throw new ApiError(400, "The user is already registered!"); // if the user is not new, throw an error
   }
 
