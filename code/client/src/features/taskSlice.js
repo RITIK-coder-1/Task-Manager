@@ -76,6 +76,23 @@ const get = createAsyncThunk(
   }
 );
 
+/* ---------------------------------------------------------------------------
+This is a custom error message for better user experience (Purely for UX)
+------------------------------------------------------------------------------ */
+
+const uxErrorMessage = (str) => {
+  if (str.includes("timeout") && str.includes("exceeded")) {
+    const customMessage = str.replace("t", "T");
+    return `${customMessage}. Please try again!`;
+  } else {
+    return str; // if there is no timeout error, return the entire payload message
+  }
+};
+
+/* ---------------------------------------------------------------------------
+SLICE
+------------------------------------------------------------------------------ */
+
 const taskSlice = createSlice({
   name: "tasks",
   initialState: {
@@ -104,10 +121,7 @@ const taskSlice = createSlice({
     // the failure case
     builder.addCase(create.rejected, (state, action) => {
       state.status = "failed";
-      state.error = action.payload;
-      if (action.payload === "timeout of 5000ms exceeded") {
-        state.error = `${action.payload}. Please try again!`; // for UX
-      }
+      state.error = uxErrorMessage(action.payload);
     });
 
     /* ---------------------------------------------------------------------------
@@ -137,10 +151,7 @@ const taskSlice = createSlice({
     // the failure case
     builder.addCase(update.rejected, (state, action) => {
       state.status = "failed";
-      state.error = action.payload;
-      if (action.payload === "timeout of 5000ms exceeded") {
-        state.error = `${action.payload}. Please try again!`; // for UX
-      }
+      state.error = uxErrorMessage(action.payload);
     });
 
     /* ---------------------------------------------------------------------------
@@ -163,10 +174,7 @@ const taskSlice = createSlice({
     // the failure case
     builder.addCase(remove.rejected, (state, action) => {
       state.status = "failed";
-      state.error = action.payload;
-      if (action.payload === "timeout of 5000ms exceeded") {
-        state.error = `${action.payload}. Please try again!`; // for UX
-      }
+      state.error = uxErrorMessage(action.payload);
     });
 
     /* ---------------------------------------------------------------------------
@@ -188,10 +196,7 @@ const taskSlice = createSlice({
     // the failure case
     builder.addCase(get.rejected, (state, action) => {
       state.status = "failed";
-      state.error = action.payload;
-      if (action.payload === "timeout of 5000ms exceeded") {
-        state.error = `${action.payload}. Please try again!`; // for UX
-      }
+      state.error = uxErrorMessage(action.payload);
     });
   },
 });
