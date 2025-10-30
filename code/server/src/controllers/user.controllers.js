@@ -88,12 +88,19 @@ const registerUserFunction = async (req, res) => {
   let profilePicture = "";
   if (req.file) {
     // the profile picture should be uploaded only if it is sent and the req.file is valid
-    const { profilePicturePath } = req.file;
+    const { path: profilePicturePath } = req.file;
+    console.log(req.file);
 
     const profilePicture = await uploadOnCloudinary(profilePicturePath);
 
     if (!profilePicture) {
-      throw new ApiError(400, "The profile picture wasn't uploaded!"); // if cloudinary returns null, the profile pic wasn't uploaded
+      console.log("Path: ", profilePicturePath);
+      console.log("Pic: ", profilePicture);
+
+      throw new ApiError(
+        400,
+        "There was an error uploading the profile picture! Please try again!"
+      ); // if cloudinary returns null, the profile pic wasn't uploaded
     }
   }
 

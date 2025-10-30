@@ -14,6 +14,7 @@ function Register() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [username, setUsername] = useState("");
+  const [profile, setProfile] = useState(null);
 
   const handleOnSubmit = (e) => {
     e.preventDefault(); // prevent page re-load
@@ -27,6 +28,10 @@ function Register() {
     payload.append("password", password);
     payload.append("username", username);
 
+    if (profile && profile instanceof File) {
+      payload.append("profilePic", profile);
+    }
+
     dispatch(register(payload));
   };
 
@@ -38,7 +43,7 @@ function Register() {
     } else if (status === "failed") {
       return <span>{error}</span>;
     }
-    // Optional: Handle the default/idle state
+    // Handle the default/idle state
     return null;
   };
 
@@ -96,18 +101,17 @@ function Register() {
           }}
         />
       </div>
-      {/* <div className="flex gap-2">
+      <div className="flex gap-2">
         <label>Choose an image for your profile (optional): </label>
         <input
           type="file"
           className="outline-1 cursor-pointer"
-          name={"profilePicturePath"}
-          // onChange={(e) => {
-          //   const value = e.target.value;
-          //   setFirstName(value);
-          // }}
-        ></input>
-      </div> */}
+          name="profilePic"
+          onChange={(e) => {
+            setProfile(e.target.files[0]);
+          }}
+        />
+      </div>
       <Button content={"Register"} type={"submit"} />
       {renderStatusMessage()}
     </AuthCard>

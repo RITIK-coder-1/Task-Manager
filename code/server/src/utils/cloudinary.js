@@ -19,7 +19,15 @@ const deleteLocalFile = async (filepath) => {
   if (!filepath) return; // If the file doesn't exist
 
   try {
-    await fs.unlink(filepath); // delete the file
+    await fs.unlink(filepath, (err) => {
+      if (err) {
+        console.error("Could not delete local file:", err);
+        // You can choose whether to proceed or fail the request here.
+        // Failing the upload because cleanup failed is usually too strict.
+      } else {
+        console.log("Local file deleted successfully.");
+      }
+    }); // delete the file
     console.log(`Local file deleted successfully: ${filepath}`);
   } catch (error) {
     // ENOENT (Error No Entry) means the file was already gone.
@@ -36,6 +44,8 @@ const deleteLocalFile = async (filepath) => {
 
 const uploadOnCloudinary = async (filepath) => {
   if (!filepath) return null; // If the filepath doesn't exist
+
+  console.log("api key: ", process.env.CLOUDINARY_API_KEY);
 
   try {
     const response = await cloudinary.uploader.upload(filepath, {
