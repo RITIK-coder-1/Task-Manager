@@ -21,14 +21,12 @@ const deleteLocalFile = async (filepath) => {
   try {
     await fs.unlink(filepath, (err) => {
       if (err) {
-        console.error("Could not delete local file:", err);
-        // You can choose whether to proceed or fail the request here.
-        // Failing the upload because cleanup failed is usually too strict.
+        console.error("Could not delete local file:", err.message);
       } else {
-        console.log("Local file deleted successfully.");
+        // delete the file
+        console.log(`Local file deleted successfully: ${filepath}`);
       }
-    }); // delete the file
-    console.log(`Local file deleted successfully: ${filepath}`);
+    });
   } catch (error) {
     // ENOENT (Error No Entry) means the file was already gone.
     if (error.code !== "ENOENT") {
