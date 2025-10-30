@@ -7,7 +7,7 @@ import axios from "axios";
 
 const userAxios = axios.create({
   baseURL: "http://0.0.0.0:3000/api/v1/users",
-  // timeout: 5000,
+  timeout: 5000,
   headers: {
     "Content-Type": "application/json",
   },
@@ -26,6 +26,7 @@ const registerUser = async (userData) => {
           // It forces Axios to let the browser set the correct 'multipart/form-data' header (Because a user can upload the profile pic while registering).
           "Content-Type": "multipart/form-data",
         },
+        timeout: 30000, // custom timeout for file related operations
       }
     );
     console.log("User successfully registered!", response.data);
@@ -148,6 +149,7 @@ const updatePic = async (profileFormData) => {
           // It forces Axios to let the browser set the correct 'multipart/form-data' header.
           "Content-Type": "multipart/form-data",
         },
+        timeout: 30000, // custom timeout for image upload
       }
     );
 
