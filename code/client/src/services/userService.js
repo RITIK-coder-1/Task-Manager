@@ -26,9 +26,11 @@ const registerUser = async (userData) => {
           // It forces Axios to let the browser set the correct 'multipart/form-data' header (Because a user can upload the profile pic while registering).
           "Content-Type": "multipart/form-data",
         },
-        timeout: userData.profilePic ? 30000 : 5000, // custom timeout for file related operations
+        timeout: 30000, // custom timeout for file related operations
       }
     );
+    console.log("user data: ", userData);
+
     console.log("User successfully registered!", response.data);
     return response.data; // the response sent by the backend
   } catch (error) {
