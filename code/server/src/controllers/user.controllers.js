@@ -44,12 +44,9 @@ const generateTokens = async (userId) => {
 
 const registerUserFunction = async (req, res) => {
   // taking all the input fields from the client request
+
   const { fullNameString, username, password, email } = req.body;
   const fullName = JSON.parse(fullNameString); // parsing the full name string into an object
-
-  if (fullName === undefined) {
-    throw new ApiError(400, "You should input your fullname!!"); // we have to explicitly check the fullname because it is an object
-  }
 
   // checking if all the required fields are present or not
   const isRequiredAbsent = [fullName.firstName, username, password, email].some(
@@ -60,13 +57,31 @@ const registerUserFunction = async (req, res) => {
     throw new ApiError(400, "All the fields are required!"); // if at least one field is not entered, throw an error
   }
 
+  // validating the number of charaters for username and password
+  if (username.trim().length < 3 || username.trim().length > 30) {
+    throw new ApiError(
+      400,
+      "The username should 3 characters minimum and 30 characters maximum!"
+    );
+  }
+  if (password.trim().length < 10) {
+    throw new ApiError(400, "The password should be of 10 characters minimum!");
+  }
+
+  // checking if the username has already been take
+  const IsSameUsername = await User.findOne({
+    username,
+  });
+  if (IsSameUsername) {
+    throw new ApiError(400, "The username has already been taken!");
+  }
+
   // checking if the user already exists
   const ifUserExists = await User.findOne({
-    $and: [{ username }, { email }], // if the username or the email already exists, return true
+    email, // if the email already exists, return true
   });
-
   if (ifUserExists) {
-    throw new ApiError(400, "The user is already registered!"); // if the user is not new, throw an error
+    throw new ApiError(400, "The user with this email is already registered!"); // if the user is not new, throw an error
   }
 
   // uploading the profile image
