@@ -68,14 +68,6 @@ const registerUserFunction = async (req, res) => {
     throw new ApiError(400, "The password should be of 10 characters minimum!");
   }
 
-  // checking if the username has already been take
-  const IsSameUsername = await User.findOne({
-    username,
-  });
-  if (IsSameUsername) {
-    throw new ApiError(400, "The username has already been taken!");
-  }
-
   // checking if the user already exists
   const ifUserExists = await User.findOne({
     email, // if the email already exists, return true
@@ -84,19 +76,23 @@ const registerUserFunction = async (req, res) => {
     throw new ApiError(400, "The user with this email is already registered!"); // if the user is not new, throw an error
   }
 
+  // checking if the username has already been take
+  const IsSameUsername = await User.findOne({
+    username,
+  });
+  if (IsSameUsername) {
+    throw new ApiError(400, "The username has already been taken!");
+  }
+
   // uploading the profile image
   let profilePicture = "";
   if (req.file) {
     // the profile picture should be uploaded only if it is sent and the req.file is valid
     const { path: profilePicturePath } = req.file;
-    console.log(req.file);
 
-    const profilePicture = await uploadOnCloudinary(profilePicturePath);
+    profilePicture = await uploadOnCloudinary(profilePicturePath);
 
     if (!profilePicture) {
-      console.log("Path: ", profilePicturePath);
-      console.log("Pic: ", profilePicture);
-
       throw new ApiError(
         400,
         "There was an error uploading the profile picture! Please try again!"
@@ -112,7 +108,7 @@ const registerUserFunction = async (req, res) => {
     username,
     email,
     password,
-    profilePicture: profilePicture?.url || "", // only if the profile picture is present, else it should be empty
+    profilePic: profilePicture?.url || "", // only if the profile picture is present, else it should be empty
   });
 
   // last validation if the user has been registered

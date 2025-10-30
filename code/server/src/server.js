@@ -3,8 +3,8 @@
 // Entry point of the backend application.
 // ----------------------------------------------
 
-import app from "./app.js"; // importing the express app
 import "dotenv/config.js"; // Importing the environment variables
+import app from "./app.js"; // importing the express app
 import connectDB from "./config/db.js"; // The database connection function
 
 // ----------------------------------------------

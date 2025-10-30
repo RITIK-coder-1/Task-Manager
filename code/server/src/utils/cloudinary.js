@@ -43,8 +43,6 @@ const deleteLocalFile = async (filepath) => {
 const uploadOnCloudinary = async (filepath) => {
   if (!filepath) return null; // If the filepath doesn't exist
 
-  console.log("api key: ", process.env.CLOUDINARY_API_KEY);
-
   try {
     const response = await cloudinary.uploader.upload(filepath, {
       resource_type: "auto", // it uploads the file and provides the resource
