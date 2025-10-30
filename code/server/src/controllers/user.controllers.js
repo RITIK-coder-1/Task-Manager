@@ -143,22 +143,19 @@ const registerUserFunction = async (req, res) => {
 
 const loginFunction = async (req, res) => {
   // getting data from the client request
-  const { username, email, password } = req.body;
+  const { credential, password } = req.body;
 
   // validating the input data
-  if (
-    (username?.trim() === "" && email?.trim() === "") ||
-    password?.trim() === ""
-  )
+  if (credential?.trim() === "" || password?.trim() === "")
     throw new ApiError(
       400,
       "At least one of the identifiers and password are required!"
     ); // at least one out of two is required
 
-  // checking if the input data exists in the database
+  // checking if the input data (username/email and password) exist in the database
 
   const existingUser = await User.findOne({
-    $or: [{ username }, { email }], // return true if at least either of them is present
+    $or: [{ username: credential }, { email: credential }], // return true if at least either of them is present
   });
   const passwordValidator = await existingUser?.isPasswordCorrect(password); // returns true if the password is correct (only if the user exists)
 
