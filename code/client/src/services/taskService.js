@@ -14,6 +14,27 @@ const taskAxios = axios.create({
 });
 
 /* ---------------------------------------------------------------------------
+The axios request interceptor for credentials
+------------------------------------------------------------------------------ */
+
+taskAxios.interceptors.request.use(
+  (config) => {
+    const accessToken = localStorage.getItem("accessToken");
+
+    // If the token exists, attach it to the Headers
+    if (accessToken) {
+      config.headers.Authorization = `Bearer ${accessToken}`;
+    }
+
+    return config;
+  },
+  // Error handling if the request config fails
+  (error) => {
+    return Promise.reject(error);
+  }
+);
+
+/* ---------------------------------------------------------------------------
 The function to create a task
 ------------------------------------------------------------------------------ */
 
