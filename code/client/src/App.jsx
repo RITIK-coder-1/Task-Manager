@@ -18,7 +18,7 @@ function App() {
     <>
       <Login />
       <hr />
-      <UpdateDetails />
+      <UpdatePassword />
     </>
   );
 }

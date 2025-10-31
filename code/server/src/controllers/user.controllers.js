@@ -419,7 +419,10 @@ const updatePasswordFunction = async (req, res) => {
 
   // getting the user and checking if the entered password is correct or not
   const user = await User.findById(req.user?._id);
+  console.log(user);
+
   const isPasswordCorrect = await user.isPasswordCorrect(oldPassword);
+  console.log(isPasswordCorrect);
 
   if (!isPasswordCorrect) {
     throw new ApiError(400, "Invalid Old Password");
