@@ -8,5 +8,6 @@ import Login from "./auth/Login";
 import Logout from "./auth/Logout";
 import Profile from "./users/Profile";
 import UpdateDetails from "./users/UpdateDetails";
+import UpdatePassword from "./users/UpdatePassword";
 
-export { Register, Login, Logout, Profile, UpdateDetails };
+export { Register, Login, Logout, Profile, UpdateDetails, UpdatePassword };

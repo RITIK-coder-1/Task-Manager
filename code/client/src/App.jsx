@@ -10,14 +10,13 @@ import {
   Logout,
   Profile,
   UpdateDetails,
+  UpdatePassword,
 } from "./pages/index.pages";
 
 function App() {
   return (
     <>
-      <Login />
-      <hr />
-      <UpdateDetails />
+      <UpdatePassword />
     </>
   );
 }
