@@ -16,7 +16,9 @@ import {
 function App() {
   return (
     <>
-      <UpdatePassword />
+      <Login />
+      <hr />
+      <UpdateDetails />
     </>
   );
 }
