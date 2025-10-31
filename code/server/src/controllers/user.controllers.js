@@ -373,6 +373,10 @@ const updateAccountFunction = async (req, res) => {
     throw new ApiError(409, "The entered username is already present!"); // if the updated username is already present
   }
 
+  if (username.trim().length < 3) {
+    throw new ApiError(400, "The username should be of 3 characters minimum");
+  }
+
   // finding the user and updating its values
 
   const user = await User.findByIdAndUpdate(
@@ -388,7 +392,7 @@ const updateAccountFunction = async (req, res) => {
     {
       new: true,
     }
-  ).select("-password -refreshToken"); // excluding sensitive information
+  ).select("-password -refreshTokenString"); // excluding sensitive information
 
   // checking if the user is valid
   if (!user) {

@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
-import { get } from "../features/userSlice";
+import { get } from "../../features/userSlice";
 import { useDispatch, useSelector } from "react-redux";
 
 function Profile() {
   const dispatch = useDispatch();
-  const user = useSelector((state) => state.users.user?.message);
+  const user = useSelector((state) => state.users.user?.message?.user);
   useEffect(() => {
     dispatch(get());
   }, []);

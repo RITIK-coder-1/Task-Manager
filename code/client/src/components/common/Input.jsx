@@ -1,6 +1,6 @@
 import React from "react";
 
-function Input({ placeholder, name, onChange }) {
+function Input({ placeholder, name, onChange, value }) {
   return (
     <input
       type="text"
@@ -8,6 +8,8 @@ function Input({ placeholder, name, onChange }) {
       className="outline-1"
       name={name}
       onChange={onChange}
+      value={value}
+      readOnly={false}
     />
   );
 }
