@@ -69,7 +69,7 @@ The function to fetch a user
 
 const get = createAsyncThunk("users/get", async (_, { rejectWithValue }) => {
   try {
-    const response = await updateUser();
+    const response = await getUser();
     return response; // the response sent by the backend
   } catch (error) {
     return rejectWithValue(error.response?.data?.message || error.message);

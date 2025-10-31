@@ -220,8 +220,6 @@ const logoutFunction = async (req, res) => {
     }
   );
 
-  console.log(user);
-
   // cookie security options
   const options = {
     httpOnly: true,
