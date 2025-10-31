@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { AuthCard, Input, Button } from "../../components/index.components";
 import { useDispatch, useSelector } from "react-redux";
-import { userUpdate, loadUser } from "../../features/userSlice.js"; // Assuming you have loadUser
+import { userUpdate } from "../../features/userSlice.js";
 
 function UpdateDetails() {
   const dispatch = useDispatch();
