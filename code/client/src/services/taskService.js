@@ -74,6 +74,24 @@ const displayAllTasks = async (userId) => {
 };
 
 /* ---------------------------------------------------------------------------
+The function to get a specific task
+------------------------------------------------------------------------------ */
+
+const getTask = async (userId, taskId) => {
+  try {
+    const response = await taskAxios.get(`/${userId}/tasks/${taskId}`);
+    console.log("Task successfully retrieved!: ", response.data);
+    return response.data;
+  } catch (error) {
+    console.error(
+      "There was a problem while retrieving the task: ",
+      error.response?.data?.message || error.message
+    );
+    throw error;
+  }
+};
+
+/* ---------------------------------------------------------------------------
 The function to update a task
 ------------------------------------------------------------------------------ */
 

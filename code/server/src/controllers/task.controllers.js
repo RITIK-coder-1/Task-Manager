@@ -122,7 +122,7 @@ const displayAllTasksFunction = async (req, res) => {
 // Controller to retrieve a particular task
 // ----------------------------------------------
 
-const retrieveTask = async (req, res) => {
+const retrieveTaskFunction = async (req, res) => {
   const userId = req.user?._id;
   const taskId = req.body.taskId;
 
@@ -298,5 +298,6 @@ const createTask = asyncHandler(createTaskFunction);
 const displayAllTasks = asyncHandler(displayAllTasksFunction);
 const updateTask = asyncHandler(updateTaskFunction);
 const deleteTask = asyncHandler(deleteTaskFunction);
+const retrieveTask = asyncHandler(retrieveTaskFunction);
 
-export { createTask, displayAllTasks, updateTask, deleteTask };
+export { createTask, displayAllTasks, updateTask, deleteTask, retrieveTask };
