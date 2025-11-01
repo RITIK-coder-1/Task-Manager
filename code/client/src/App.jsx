@@ -11,6 +11,7 @@ import {
   Profile,
   UpdateDetails,
   UpdatePassword,
+  UpdatePic,
 } from "./pages/index.pages";
 
 function App() {
@@ -18,7 +19,7 @@ function App() {
     <>
       <Login />
       <hr />
-      <UpdatePassword />
+      <UpdatePic />
     </>
   );
 }

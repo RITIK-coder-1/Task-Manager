@@ -9,5 +9,14 @@ import Logout from "./auth/Logout";
 import Profile from "./users/Profile";
 import UpdateDetails from "./users/UpdateDetails";
 import UpdatePassword from "./users/UpdatePassword";
+import UpdatePic from "./users/UpdatePic";
 
-export { Register, Login, Logout, Profile, UpdateDetails, UpdatePassword };
+export {
+  Register,
+  Login,
+  Logout,
+  Profile,
+  UpdateDetails,
+  UpdatePassword,
+  UpdatePic,
+};

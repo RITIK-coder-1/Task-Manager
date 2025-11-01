@@ -473,7 +473,9 @@ const updatePasswordFunction = async (req, res) => {
 
 const updateFileFunction = async (req, res) => {
   const user = await User.findById(req.user?._id);
+
   const oldProfile = user.profilePic;
+  console.log("old profile: ", oldProfile);
 
   // getting the path of the file
   const picPath = req.file?.path; // we're uploading a single file
@@ -489,6 +491,14 @@ const updateFileFunction = async (req, res) => {
   // validating the cloudinary url
   if (!newProfilePic.url) {
     throw new ApiError(400, "Could not upload the new avatar file");
+  }
+
+  // deleting the old file from cloudinary
+  try {
+    await deleteFromCloudinary(oldProfile); // Utility function runs and handles error internally
+    console.log("File deleteddddddd");
+  } catch (error) {
+    console.error("Non-critical cleanup failure:", error);
   }
 
   // updating the user file on database
@@ -508,16 +518,9 @@ const updateFileFunction = async (req, res) => {
     throw new ApiError("The data couldn't be updated!");
   }
 
-  // deleting the old file from cloudinary
-  try {
-    await deleteFromCloudinary(oldProfile); // Utility function runs and handles error internally
-  } catch (error) {
-    console.error("Non-critical cleanup failure:", error);
-  }
-
   // sending a JSON API response
-  res
-    .send(200)
+  return res
+    .status(200)
     .json(new ApiResponse(200, foundUser, "The file has been updated!"));
 };
 
