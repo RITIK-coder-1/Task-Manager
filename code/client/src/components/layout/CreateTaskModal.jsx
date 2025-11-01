@@ -37,7 +37,7 @@ function CreateTaskModal() {
     }
 
     const dataObject = {
-      userId: user._id,
+      userId: user?._id,
       taskData: payload,
     };
 

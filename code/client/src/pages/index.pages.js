@@ -10,6 +10,7 @@ import Profile from "./users/Profile";
 import UpdateDetails from "./users/UpdateDetails";
 import UpdatePassword from "./users/UpdatePassword";
 import UpdatePic from "./users/UpdatePic";
+import Dashboard from "./users/Dashboard";
 
 export {
   Register,
@@ -19,4 +20,5 @@ export {
   UpdateDetails,
   UpdatePassword,
   UpdatePic,
+  Dashboard,
 };

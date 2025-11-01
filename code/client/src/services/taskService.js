@@ -56,20 +56,17 @@ const createTask = async (userId, formData) => {
 };
 
 /* ---------------------------------------------------------------------------
-The function to get a task
+The function to display all the tasks
 ------------------------------------------------------------------------------ */
 
-const getTask = async (taskId) => {
-  if (!taskId) {
-    throw new Error("The task ID is required to fetch the task!");
-  }
+const getTask = async (userId) => {
   try {
-    const response = await taskAxios.get(`/${taskId}`);
-    console.log("Task successfully retrieved!: ", response.data);
+    const response = await taskAxios.get(`/${userId}/tasks`);
+    console.log("Tasks successfully retrieved!: ", response.data);
     return response.data;
   } catch (error) {
     console.error(
-      "There was a problem while retrieving the task: ",
+      "There was a problem while retrieving the tasks: ",
       error.response?.data?.message || error.message
     );
     throw error;

@@ -12,6 +12,7 @@ import {
   UpdateDetails,
   UpdatePassword,
   UpdatePic,
+  Dashboard,
 } from "./pages/index.pages";
 import { CreateTaskModal } from "./components/index.components.js";
 
@@ -20,7 +21,6 @@ function App() {
     <>
       <Login />
       <hr />
-      <CreateTaskModal />
     </>
   );
 }

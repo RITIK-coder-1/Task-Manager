@@ -24,7 +24,7 @@ const taskRouter = Router();
 // ----------------------------------------------
 
 taskRouter.route("/create").post(verifyJwt, upload.single("image"), createTask); // route to create new tasks
-taskRouter.route("/:taskId").get(verifyJwt, retrieveTask); // route to get a particular task
+taskRouter.route("/").get(verifyJwt, retrieveTask); // route to get all the tasks
 taskRouter
   .route("/:taskId")
   .patch(verifyJwt, upload.single("image"), updateTask); // route to update a particular task (The patch method automatically adds "/update")

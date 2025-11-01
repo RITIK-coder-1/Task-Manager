@@ -66,9 +66,9 @@ Function to get a task
 
 const get = createAsyncThunk(
   "tasks/get",
-  async (taskId, { rejectWithValue }) => {
+  async (userId, { rejectWithValue }) => {
     try {
-      const response = await getTask(taskId);
+      const response = await getTask(userId);
       return response; // the data sent by the backend
     } catch (error) {
       return rejectWithValue(error.response?.data?.message || error.message);
@@ -99,7 +99,6 @@ const taskSlice = createSlice({
     tasks: [], // holding the data
     status: "idle", // "idle", "pending", "succeeded", "rejected"
     error: null, // the error message
-    tempTask: null, // the current task that the user wishes to view
   },
   extraReducers: (builder) => {
     /* ---------------------------------------------------------------------------
@@ -190,7 +189,7 @@ const taskSlice = createSlice({
     // the success case
     builder.addCase(get.fulfilled, (state, action) => {
       state.status = "succeeded";
-      state.tempTask = action.payload; // the current task that the user wishes to view
+      state.tasks = action.payload;
     });
 
     // the failure case
@@ -201,6 +200,6 @@ const taskSlice = createSlice({
   },
 });
 
-export { create, update, remove };
+export { create, update, remove, get };
 
 export default taskSlice.reducer;
