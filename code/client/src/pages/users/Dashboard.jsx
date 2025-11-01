@@ -1,20 +1,20 @@
 import React, { useEffect } from "react";
-import { get as getTask } from "../../features/taskSlice.js";
-import { get as getUser } from "../../features/userSlice.js";
+import { displayAll } from "../../features/taskSlice.js";
+import { get } from "../../features/userSlice.js";
 import { useDispatch, useSelector } from "react-redux";
 
 function Dashboard() {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    dispatch(getUser());
+    dispatch(get());
   }, []);
 
   const user = useSelector((state) => state.users.user?.message?.user);
   const tasks = useSelector((state) => state.tasks.tasks?.message);
 
   useEffect(() => {
-    dispatch(getTask(user?._id));
+    dispatch(displayAll(user?._id));
   }, []);
 
   const displayTasks = () => {

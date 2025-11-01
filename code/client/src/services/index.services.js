@@ -14,7 +14,7 @@ import { updatePic } from "./userService";
 
 // task API calls
 import { createTask } from "./taskService";
-import { getTask } from "./taskService";
+import { displayAllTasks } from "./taskService";
 import { updateTask } from "./taskService";
 import { deleteTask } from "./taskService";
 
@@ -27,7 +27,7 @@ export {
   updatePassword,
   updatePic,
   createTask,
-  getTask,
+  displayAllTasks,
   updateTask,
   deleteTask,
 };

@@ -6,7 +6,7 @@ This is the slice for all the task related global state management
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import {
   createTask,
-  getTask,
+  displayAllTasks,
   updateTask,
   deleteTask,
 } from "../services/index.services.js";
@@ -33,10 +33,9 @@ Function to update a task
 
 const update = createAsyncThunk(
   "tasks/update",
-  async (taskData, { rejectWithValue }) => {
+  async ({ userId, taskId, taskData }, { rejectWithValue }) => {
     try {
-      const { id: taskId, ...formData } = taskData;
-      const response = await updateTask(taskId, formData);
+      const response = await updateTask(userId, taskId, taskData);
       return response; // the data sent by the backend
     } catch (error) {
       return rejectWithValue(error.response?.data?.message || error.message);
@@ -50,9 +49,9 @@ Function to remove a task
 
 const remove = createAsyncThunk(
   "tasks/remove",
-  async (taskId, { rejectWithValue }) => {
+  async ({ userId, taskId }, { rejectWithValue }) => {
     try {
-      const response = await deleteTask(taskId);
+      const response = await deleteTask(userId, taskId);
       return response; // the data sent by the backend
     } catch (error) {
       return rejectWithValue(error.response?.data?.message || error.message);
@@ -64,11 +63,11 @@ const remove = createAsyncThunk(
 Function to get a task
 ------------------------------------------------------------------------------ */
 
-const get = createAsyncThunk(
+const displayAll = createAsyncThunk(
   "tasks/get",
   async (userId, { rejectWithValue }) => {
     try {
-      const response = await getTask(userId);
+      const response = await displayAllTasks(userId);
       return response; // the data sent by the backend
     } catch (error) {
       return rejectWithValue(error.response?.data?.message || error.message);
@@ -177,29 +176,29 @@ const taskSlice = createSlice({
     });
 
     /* ---------------------------------------------------------------------------
-      All the cases for retrieving a task
+      All the cases for displaying all the tasks
     ------------------------------------------------------------------------------ */
 
     // the pending case
-    builder.addCase(get.pending, (state) => {
+    builder.addCase(displayAll.pending, (state) => {
       state.status = "pending";
       state.error = null; // clear previous errors
     });
 
     // the success case
-    builder.addCase(get.fulfilled, (state, action) => {
+    builder.addCase(displayAll.fulfilled, (state, action) => {
       state.status = "succeeded";
       state.tasks = action.payload;
     });
 
     // the failure case
-    builder.addCase(get.rejected, (state, action) => {
+    builder.addCase(displayAll.rejected, (state, action) => {
       state.status = "failed";
       state.error = uxErrorMessage(action.payload);
     });
   },
 });
 
-export { create, update, remove, get };
+export { create, update, remove, displayAll };
 
 export default taskSlice.reducer;

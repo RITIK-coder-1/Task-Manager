@@ -59,7 +59,7 @@ const createTask = async (userId, formData) => {
 The function to display all the tasks
 ------------------------------------------------------------------------------ */
 
-const getTask = async (userId) => {
+const displayAllTasks = async (userId) => {
   try {
     const response = await taskAxios.get(`/${userId}/tasks`);
     console.log("Tasks successfully retrieved!: ", response.data);
@@ -77,9 +77,9 @@ const getTask = async (userId) => {
 The function to update a task
 ------------------------------------------------------------------------------ */
 
-const updateTask = async (taskId, formData) => {
+const updateTask = async (userId, taskId, formData) => {
   try {
-    const response = await taskAxios.patch(`/${taskId}`, formData);
+    const response = await taskAxios.patch(`${userId}/${taskId}`, formData);
     console.log("Task successfully updated!: ", response.data);
     return response.data;
   } catch (error) {
@@ -95,9 +95,9 @@ const updateTask = async (taskId, formData) => {
 The function to delete a task
 ------------------------------------------------------------------------------ */
 
-const deleteTask = async (taskId) => {
+const deleteTask = async (userId, taskId) => {
   try {
-    const response = await taskAxios.delete(`/${taskId}`);
+    const response = await taskAxios.delete(`${userId}/${taskId}`);
     console.log("Task successfully deleted!: ", response.data);
     return response.data;
   } catch (error) {
@@ -109,4 +109,4 @@ const deleteTask = async (taskId) => {
   }
 };
 
-export { createTask, getTask, updateTask, deleteTask };
+export { createTask, displayAllTasks, updateTask, deleteTask };

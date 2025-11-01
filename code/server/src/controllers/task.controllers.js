@@ -96,7 +96,7 @@ const createTaskFunction = async (req, res) => {
 // Controller to display all the tasks
 // ----------------------------------------------
 
-const retrieveTaskFunction = async (req, res) => {
+const displayAllTasksFunction = async (req, res) => {
   const userId = req.user._id; // the user id
 
   if (!userId) {
@@ -115,6 +115,30 @@ const retrieveTaskFunction = async (req, res) => {
     .status(200)
     .json(
       new ApiResponse(200, task, "The tasks have been retrieved successfully!")
+    );
+};
+
+// ----------------------------------------------
+// Controller to retrieve a particular task
+// ----------------------------------------------
+
+const retrieveTask = async (req, res) => {
+  const userId = req.user?._id;
+  const taskId = req.body.taskId;
+
+  if (!userId || !taskId) {
+    throw new ApiError(400, "Invalid user or task!");
+  }
+
+  const task = await Task.findOne({ owner: userId, _id: taskId });
+
+  if (!task) {
+    throw new ApiError(404, "The task couldn't be fetched!");
+  }
+  return res
+    .status(200)
+    .json(
+      new ApiResponse(200, task, "The task has been retrieved successfully!")
     );
 };
 
@@ -271,8 +295,8 @@ const deleteTaskFunction = async (req, res) => {
 // Error Handling
 // ----------------------------------------------
 const createTask = asyncHandler(createTaskFunction);
-const retrieveTask = asyncHandler(retrieveTaskFunction);
+const displayAllTasks = asyncHandler(displayAllTasksFunction);
 const updateTask = asyncHandler(updateTaskFunction);
 const deleteTask = asyncHandler(deleteTaskFunction);
 
-export { createTask, retrieveTask, updateTask, deleteTask };
+export { createTask, displayAllTasks, updateTask, deleteTask };
