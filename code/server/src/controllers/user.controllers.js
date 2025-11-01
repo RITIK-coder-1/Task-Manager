@@ -474,8 +474,7 @@ const updatePasswordFunction = async (req, res) => {
 const updateFileFunction = async (req, res) => {
   const user = await User.findById(req.user?._id);
 
-  const oldProfile = user.profilePic;
-  console.log("old profile: ", oldProfile);
+  const oldProfile = user.profilePic; // the old profile pic to delete
 
   // getting the path of the file
   const picPath = req.file?.path; // we're uploading a single file
@@ -489,14 +488,15 @@ const updateFileFunction = async (req, res) => {
   const newProfilePic = await uploadOnCloudinary(picPath);
 
   // validating the cloudinary url
-  if (!newProfilePic.url) {
-    throw new ApiError(400, "Could not upload the new avatar file");
+  if (!newProfilePic?.url) {
+    throw new ApiError(400, "Could not upload the new profile pic");
   }
 
   // deleting the old file from cloudinary
+
+  const publicId = oldProfile.slice(-24, -4); // only the public id has to be given and not the full cloudinary link. I used these specific numbers because the public id is of 20 characters and it ends with ".png". We only need the public id excluding the extension
   try {
-    await deleteFromCloudinary(oldProfile); // Utility function runs and handles error internally
-    console.log("File deleteddddddd");
+    await deleteFromCloudinary(publicId); // Utility function runs and handles error internally
   } catch (error) {
     console.error("Non-critical cleanup failure:", error);
   }

@@ -74,13 +74,15 @@ const deleteFromCloudinary = async (fileUrl) => {
   }
 
   try {
-    await cloudinary.uploader.destroy(fileUrl);
+    const response = await cloudinary.uploader.destroy(fileUrl);
     console.log("The file has been successfully deleted from cloudinary!");
+    console.log(response);
   } catch (error) {
     console.error(
       "There was an error while deleting the file from cloudinary: ",
       error
     );
+    throw error;
   }
 };
 
