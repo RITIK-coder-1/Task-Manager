@@ -17,6 +17,7 @@ import { createTask } from "./taskService";
 import { displayAllTasks } from "./taskService";
 import { updateTask } from "./taskService";
 import { deleteTask } from "./taskService";
+import { getTask } from "./taskService";
 
 export {
   registerUser,
@@ -30,4 +31,5 @@ export {
   displayAllTasks,
   updateTask,
   deleteTask,
+  getTask,
 };

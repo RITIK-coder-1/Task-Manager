@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { AuthCard, Input, Button } from "../../components/index.components.js";
 import { login } from "../../features/userSlice.js";
 import { useDispatch, useSelector } from "react-redux";

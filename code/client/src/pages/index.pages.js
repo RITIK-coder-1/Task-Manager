@@ -11,6 +11,7 @@ import UpdateDetails from "./users/UpdateDetails";
 import UpdatePassword from "./users/UpdatePassword";
 import UpdatePic from "./users/UpdatePic";
 import Dashboard from "./users/Dashboard";
+import TaskDetails from "./tasks/TaskDetails";
 
 export {
   Register,
@@ -21,4 +22,5 @@ export {
   UpdatePassword,
   UpdatePic,
   Dashboard,
+  TaskDetails,
 };
