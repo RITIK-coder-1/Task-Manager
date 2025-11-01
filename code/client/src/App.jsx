@@ -13,13 +13,14 @@ import {
   UpdatePassword,
   UpdatePic,
 } from "./pages/index.pages";
+import { CreateTaskModal } from "./components/index.components.js";
 
 function App() {
   return (
     <>
       <Login />
       <hr />
-      <UpdatePic />
+      <CreateTaskModal />
     </>
   );
 }

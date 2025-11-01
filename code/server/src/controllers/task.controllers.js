@@ -20,7 +20,7 @@ import mongoose from "mongoose";
 const createTaskFunction = async (req, res) => {
   // taking all the input fields from the client request
   const { title, description, priority, isCompleted, category } = req.body;
-  const { imagePath } = req.file || ""; // the image uploaded
+  const { path: imagePath } = req.file || ""; // the image uploaded
   const ownerId = req.user._id; // the owner of the task
 
   if (!ownerId) {
