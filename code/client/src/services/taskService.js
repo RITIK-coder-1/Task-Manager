@@ -127,4 +127,4 @@ const deleteTask = async (userId, taskId) => {
   }
 };
 
-export { createTask, displayAllTasks, updateTask, deleteTask };
+export { createTask, displayAllTasks, updateTask, deleteTask, getTask };

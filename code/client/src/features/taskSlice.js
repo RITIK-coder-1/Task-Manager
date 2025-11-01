@@ -9,6 +9,7 @@ import {
   displayAllTasks,
   updateTask,
   deleteTask,
+  getTask,
 } from "../services/index.services.js";
 
 /* ---------------------------------------------------------------------------
@@ -44,6 +45,22 @@ const update = createAsyncThunk(
 );
 
 /* ---------------------------------------------------------------------------
+Function to get a task
+------------------------------------------------------------------------------ */
+
+const get = createAsyncThunk(
+  "tasks/get",
+  async ({ userId, taskId }, { rejectWithValue }) => {
+    try {
+      const response = await getTask(userId, taskId);
+      return response;
+    } catch (error) {
+      return rejectWithValue(error.response?.data?.message || error.message);
+    }
+  }
+);
+
+/* ---------------------------------------------------------------------------
 Function to remove a task
 ------------------------------------------------------------------------------ */
 
@@ -60,11 +77,11 @@ const remove = createAsyncThunk(
 );
 
 /* ---------------------------------------------------------------------------
-Function to get a task
+Function to display all the tasks
 ------------------------------------------------------------------------------ */
 
 const displayAll = createAsyncThunk(
-  "tasks/get",
+  "tasks/displayAll",
   async (userId, { rejectWithValue }) => {
     try {
       const response = await displayAllTasks(userId);
@@ -196,9 +213,31 @@ const taskSlice = createSlice({
       state.status = "failed";
       state.error = uxErrorMessage(action.payload);
     });
+
+    /* ---------------------------------------------------------------------------
+      All the cases for getting a specific task
+    ------------------------------------------------------------------------------ */
+
+    // the pending case
+    builder.addCase(get.pending, (state) => {
+      state.status = "pending";
+      state.error = null; // clear previous errors
+    });
+
+    // the success case
+    builder.addCase(get.fulfilled, (state, action) => {
+      state.status = "succeeded";
+      state.tasks = action.payload;
+    });
+
+    // the failure case
+    builder.addCase(get.rejected, (state, action) => {
+      state.status = "failed";
+      state.error = uxErrorMessage(action.payload);
+    });
   },
 });
 
-export { create, update, remove, displayAll };
+export { create, update, remove, displayAll, get };
 
 export default taskSlice.reducer;
