@@ -49,7 +49,7 @@ const createTaskFunction = async (req, res) => {
 
   // checking if isCompleted a boolean or not
 
-  const booleanIsCompleted = Boolean(isCompleted);
+  const booleanIsCompleted = Boolean(isCompleted); // because I'm sending "" for false and "true" for true from the frontend
   if (booleanIsCompleted !== true && booleanIsCompleted !== false) {
     throw new ApiError(400, "Completion should only be a boolean!");
   }
@@ -73,7 +73,7 @@ const createTaskFunction = async (req, res) => {
     title,
     description: description || "",
     priority,
-    booleanIsCompleted,
+    isCompleted: booleanIsCompleted,
     category: category || "unspecified",
     image: uploadedImage?.url,
     owner: ownerId,

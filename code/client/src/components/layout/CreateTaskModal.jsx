@@ -33,7 +33,7 @@ function CreateTaskModal() {
     payload.append("category", category);
 
     if (imagePath && imagePath instanceof File) {
-      payload.append("imagePath", imagePath);
+      payload.append("image", imagePath);
     }
 
     const dataObject = {
@@ -102,6 +102,7 @@ function CreateTaskModal() {
           name="isCompleted"
           id="isCompleted"
           onClick={() => {
+            // these values will be converted to boolean in the create task controller in the server
             if (isCompleted === "") {
               setIsCompleted("true");
             } else if (isCompleted === "true") {
