@@ -17,9 +17,9 @@ Function to create a task
 
 const create = createAsyncThunk(
   "tasks/create",
-  async (taskData, { rejectWithValue }) => {
+  async ({ userId, taskData }, { rejectWithValue }) => {
     try {
-      const response = await createTask(taskData);
+      const response = await createTask(userId, taskData);
       return response; // the data sent by the backend
     } catch (error) {
       return rejectWithValue(error.response?.data?.message || error.message);

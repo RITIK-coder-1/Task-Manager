@@ -1,18 +1,25 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { AuthCard, Button, Input } from "../index.components";
 import { useDispatch, useSelector } from "react-redux";
 import { create } from "../../features/taskSlice.js";
+import { get } from "../../features/userSlice.js";
 
 function CreateTaskModal() {
+  const dispath = useDispatch();
+
+  useEffect(() => {
+    dispath(get());
+  }, []);
+
+  const user = useSelector((state) => state.users.user?.message?.user);
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [priority, setPriority] = useState("Low");
-  const [isCompleted, setIsCompleted] = useState(false);
+  const [isCompleted, setIsCompleted] = useState("");
   const [imagePath, setImagePath] = useState("");
   const [category, setCategory] = useState("unspecified");
-  const status = useSelector((state) => state.users.status);
-  const error = useSelector((state) => state.users.error);
-  const dispath = useDispatch();
+  const status = useSelector((state) => state.tasks.status);
+  const error = useSelector((state) => state.tasks.error);
 
   const handleSubmit = (e) => {
     e.preventDefault(); // for preventing page reload
@@ -29,7 +36,12 @@ function CreateTaskModal() {
       payload.append("imagePath", imagePath);
     }
 
-    dispath(create(payload));
+    const dataObject = {
+      userId: user._id,
+      taskData: payload,
+    };
+
+    dispath(create(dataObject));
   };
 
   const conditionalMessage = () => {
@@ -89,8 +101,12 @@ function CreateTaskModal() {
           type="checkbox"
           name="isCompleted"
           id="isCompleted"
-          onChange={(e) => {
-            setIsCompleted(e.target.value);
+          onClick={() => {
+            if (isCompleted === "") {
+              setIsCompleted("true");
+            } else if (isCompleted === "true") {
+              setIsCompleted("");
+            }
           }}
         />
         <label htmlFor="imagePath">You can add an image (optional)</label>

@@ -6,7 +6,7 @@ This script handles all the API calls using axios for task related queries
 import axios from "axios";
 
 const taskAxios = axios.create({
-  baseURL: "http://0.0.0.0:3000/api/v1/users/tasks",
+  baseURL: "http://0.0.0.0:3000/api/v1/users",
   timeout: 5000,
   headers: {
     "Content-Type": "application/json",
@@ -38,9 +38,9 @@ taskAxios.interceptors.request.use(
 The function to create a task
 ------------------------------------------------------------------------------ */
 
-const createTask = async (formData) => {
+const createTask = async (userId, formData) => {
   try {
-    const response = await taskAxios.post("/create", formData, {
+    const response = await taskAxios.post(`${userId}/tasks/create`, formData, {
       headers: { "Content-Type": "multipart/form-data" }, // because users can attach an image to tasks
     });
     console.log("Task successfully created!: ", response.data);
@@ -55,7 +55,7 @@ const createTask = async (formData) => {
 };
 
 /* ---------------------------------------------------------------------------
-The function to create a task
+The function to get a task
 ------------------------------------------------------------------------------ */
 
 const getTask = async (taskId) => {

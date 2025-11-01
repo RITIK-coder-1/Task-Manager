@@ -45,12 +45,13 @@ const createTaskFunction = async (req, res) => {
     );
   }
 
+  console.log(req.body);
+
   // checking if isCompleted a boolean or not
-  if (isCompleted !== undefined) {
-    // only if the user has entered it
-    if (isCompleted !== true && isCompleted !== false) {
-      throw new ApiError(400, "Completion should only be a boolean!");
-    }
+
+  const booleanIsCompleted = Boolean(isCompleted);
+  if (booleanIsCompleted !== true && booleanIsCompleted !== false) {
+    throw new ApiError(400, "Completion should only be a boolean!");
   }
 
   // The title is compulsory and all the other fields have default values if not customized by the User
@@ -72,7 +73,7 @@ const createTaskFunction = async (req, res) => {
     title,
     description: description || "",
     priority,
-    isCompleted,
+    booleanIsCompleted,
     category: category || "unspecified",
     image: uploadedImage?.url,
     owner: ownerId,
