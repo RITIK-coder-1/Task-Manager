@@ -10,8 +10,9 @@ import Profile from "./users/Profile";
 import UpdateDetails from "./users/UpdateDetails";
 import UpdatePassword from "./users/UpdatePassword";
 import UpdatePic from "./users/UpdatePic";
-import Dashboard from "./users/Dashboard";
+import Dashboard from "./ui/Dashboard";
 import TaskDetails from "./tasks/TaskDetails";
+import Home from "./ui/Home";
 
 export {
   Register,
@@ -23,4 +24,5 @@ export {
   UpdatePic,
   Dashboard,
   TaskDetails,
+  Home,
 };

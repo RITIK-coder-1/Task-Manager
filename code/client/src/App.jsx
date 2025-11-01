@@ -14,15 +14,21 @@ import {
   UpdatePic,
   Dashboard,
   TaskDetails,
+  Home,
 } from "./pages/index.pages";
-import { CreateTaskModal } from "./components/index.components.js";
+import { CreateTaskModal, Header } from "./components/index.components.js";
+import { Route, Routes } from "react-router-dom";
 
 function App() {
   return (
     <>
-      <Login />
-      <hr />
-      <TaskDetails />
+      <Header />
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/profile" element={<Profile />} />
+      </Routes>
     </>
   );
 }
